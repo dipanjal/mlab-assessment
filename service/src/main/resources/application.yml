@@ -1,0 +1,34 @@
+server:
+  tomcat:
+    accept-count: 300
+
+spring:
+  datasource:
+#    url: jdbc:h2:file:C:\Users\BS-308\data\mlab
+#    username: ${DB_USERNAME:sa}
+#    password: ${DB_PASSWORD:password}
+
+    url: ${DB_URL:jdbc:mysql://localhost:3306/mlab_db}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:toor}
+
+  jpa:
+#    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        enable_lazy_load_no_trans: true
+
+message-property:
+  transfer-successful: Transaction successful
+  reverse-successful: Reverse successful
+  invalid-transaction-type-error: Invalid Transaction Type
+  source-acc-not-found-error: Source Account Not Found
+  destination-acc-not-found-error: Destination Account Not Found
+  insufficient-balance-error: Insufficient Balance
+  request-id-duplicate-error: Duplicate Request ID found
