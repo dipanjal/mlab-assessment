@@ -35,3 +35,4 @@ message-property:
 
 application:
   request-id-header: request-id
+  max-issue-book: 5

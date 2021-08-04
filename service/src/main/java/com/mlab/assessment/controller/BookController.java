@@ -2,8 +2,10 @@ package com.mlab.assessment.controller;
 
 import com.mlab.assessment.model.ApiResponse;
 import com.mlab.assessment.model.dto.BookSearchDTO;
-import com.mlab.assessment.model.request.book.BookDTO;
+import com.mlab.assessment.model.request.book.IssueBookDTO;
+import com.mlab.assessment.model.request.book.UpdateBookDTO;
 import com.mlab.assessment.model.request.book.CreateBookDTO;
+import com.mlab.assessment.model.response.book.BookResponseDTO;
 import com.mlab.assessment.service.book.BookService;
 import com.mlab.assessment.utils.ResponseBuilder;
 import lombok.RequiredArgsConstructor;
@@ -27,29 +29,29 @@ public class BookController extends BaseController {
     private final BookService bookService;
 
     @GetMapping("/book/get-all")
-    public ResponseEntity<ApiResponse<List<BookDTO>>> getBooks(){
+    public ResponseEntity<ApiResponse<List<BookResponseDTO>>> getBooks(){
         return ResponseEntity.ok(
                 ResponseBuilder.buildOkResponse(
                         bookService.findAllBooks()));
     }
 
     @GetMapping("/book/get-by-id/{id}")
-    public ResponseEntity<ApiResponse<BookDTO>> getBookById(@PathVariable long id){
+    public ResponseEntity<ApiResponse<BookResponseDTO>> getBookById(@PathVariable long id){
         return ResponseEntity.ok(
                 ResponseBuilder.buildOkResponse(
                         bookService.findBookById(id)));
     }
 
     @PostMapping("/book/search")
-    public ResponseEntity<ApiResponse<List<BookDTO>>> searchBook(@RequestBody BookSearchDTO dto){
+    public ResponseEntity<ApiResponse<List<BookResponseDTO>>> searchBook(@RequestBody BookSearchDTO dto){
         return ResponseEntity.ok(
                 ResponseBuilder.buildOkResponse(
                         bookService.searchBook(dto)));
     }
 
     @PostMapping("/book/create")
-    public ResponseEntity<ApiResponse<BookDTO>> create(@RequestBody @Valid CreateBookDTO dto,
-                                                       BindingResult result){
+    public ResponseEntity<ApiResponse<BookResponseDTO>> create(@RequestBody @Valid CreateBookDTO dto,
+                                                             BindingResult result){
         super.throwIfHasError(result);
         return ResponseEntity.ok(
                 ResponseBuilder.buildOkResponse(
@@ -57,16 +59,25 @@ public class BookController extends BaseController {
     }
 
     @PostMapping("/book/update")
-    public ResponseEntity<ApiResponse<BookDTO>> update(@RequestBody @Valid BookDTO dto,
-                                                       BindingResult result){
+    public ResponseEntity<ApiResponse<BookResponseDTO>> update(@RequestBody @Valid UpdateBookDTO dto,
+                                                             BindingResult result){
         super.throwIfHasError(result);
         return ResponseEntity.ok(
                 ResponseBuilder.buildOkResponse(
                         bookService.updateBook(dto)));
     }
 
+    @PostMapping("/book/issue")
+    public ResponseEntity<ApiResponse<List<BookResponseDTO>>> issueBook(@RequestBody @Valid IssueBookDTO dto,
+                                                                  BindingResult result){
+        super.throwIfHasError(result);
+        return ResponseEntity.ok(
+                ResponseBuilder.buildOkResponse(
+                        bookService.issueBook(dto)));
+    }
+
     @DeleteMapping("/book/delete-by-id/{id}")
-    public ResponseEntity<ApiResponse<BookDTO>> deleteBookById(@PathVariable long id){
+    public ResponseEntity<ApiResponse<BookResponseDTO>> deleteBookById(@PathVariable long id){
         return ResponseEntity.ok(
                 ResponseBuilder.buildOkResponse(
                         bookService.deleteBook(id)));

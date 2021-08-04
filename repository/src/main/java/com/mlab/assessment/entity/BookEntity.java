@@ -5,9 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * @author dipanjal
@@ -25,6 +23,14 @@ public class BookEntity extends BaseEntity {
     @Column(name = "meta_id", nullable = false)
     private long metaId;
 
-    @ManyToMany(mappedBy = "books")
-    private Collection<UserEntity> users = new HashSet<>();
+    @ManyToMany(mappedBy = "books", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<UserEntity> users = new ArrayList<>();
+
+    public void addUser(UserEntity userEntity){
+        users.add(userEntity);
+    }
+
+    public void remove(UserEntity userEntity){
+        users.remove(userEntity);
+    }
 }

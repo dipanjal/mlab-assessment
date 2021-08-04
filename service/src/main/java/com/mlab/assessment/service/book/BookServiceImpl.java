@@ -2,14 +2,18 @@ package com.mlab.assessment.service.book;
 
 import com.mlab.assessment.entity.BookEntity;
 import com.mlab.assessment.entity.BookMetaEntity;
+import com.mlab.assessment.entity.UserEntity;
+import com.mlab.assessment.exception.BadRequestException;
 import com.mlab.assessment.exception.RecordNotFoundException;
 import com.mlab.assessment.model.dto.BookSearchDTO;
-import com.mlab.assessment.model.request.book.BookDTO;
 import com.mlab.assessment.model.request.book.CreateBookDTO;
+import com.mlab.assessment.model.request.book.IssueBookDTO;
+import com.mlab.assessment.model.request.book.UpdateBookDTO;
+import com.mlab.assessment.model.response.book.BookResponseDTO;
 import com.mlab.assessment.service.BaseService;
 import com.mlab.assessment.service.BookEntityService;
 import com.mlab.assessment.service.BookMetaEntityService;
-import com.mlab.assessment.service.LocaleMessageHelper;
+import com.mlab.assessment.service.UserEntityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -26,23 +30,27 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookServiceImpl extends BaseService implements BookService {
 
-    private final BookEntityService entityService;
+    private final BookEntityService bookEntityService;
     private final BookMetaEntityService metaEntityService;
+    private final UserEntityService userEntityService;
     private final BookMapper mapper;
-    private final LocaleMessageHelper messageHelper;
 
     @Override
-    public List<BookDTO> findAllBooks() {
+    public List<BookResponseDTO> findAllBooks() {
+        List<BookEntity> books = bookEntityService.findAll();
+        if(CollectionUtils.isEmpty(books))
+            throw new RecordNotFoundException(messageHelper.getLocalMessage(RECORD_NOT_FOUND_MSG_KEY));
+
         List<BookMetaEntity> metaList = metaEntityService.findAll();
         if(CollectionUtils.isEmpty(metaList))
             throw new RecordNotFoundException(messageHelper.getLocalMessage(RECORD_NOT_FOUND_MSG_KEY));
 
-        return mapper.mapToDTO(metaList);
+        return mapper.mapToBookResponseDTO(books, metaList);
     }
 
     @Override
-    public BookDTO findBookById(long id) {
-        BookEntity book = entityService
+    public BookResponseDTO findBookById(long id) {
+        BookEntity book = bookEntityService
                 .findById(id)
                 .orElseThrow(super.supplyRecordNotFoundException(RECORD_NOT_FOUND_MSG_KEY));
 
@@ -50,52 +58,81 @@ public class BookServiceImpl extends BaseService implements BookService {
                 .findById(book.getMetaId())
                 .orElseThrow(super.supplyRecordNotFoundException(RECORD_NOT_FOUND_MSG_KEY));
 
-        return mapper.mapToDTO(meta);
+        return mapper.mapToBookResponseDTO(book, meta);
     }
 
     @Override
-    public List<BookDTO> searchBook(BookSearchDTO dto) {
-        List<BookMetaEntity> metaList = metaEntityService.searchBook(dto);
-        if(CollectionUtils.isEmpty(metaList))
+    public List<BookResponseDTO> searchBook(BookSearchDTO dto) {
+        List<BookMetaEntity> metaEntities = metaEntityService.searchBook(dto);
+        if(CollectionUtils.isEmpty(metaEntities))
             throw new RecordNotFoundException(messageHelper.getLocalMessage(RECORD_NOT_FOUND_MSG_KEY));
 
-        return mapper.mapToDTO(metaList);
+        List<BookEntity> bookEntities = bookEntityService.findBooksInMeta(metaEntities);
+        return mapper.mapToBookResponseDTO(bookEntities, metaEntities);
     }
 
     @Override
-    public BookDTO createBook(CreateBookDTO dto) {
+    public BookResponseDTO createBook(CreateBookDTO dto) {
         BookEntity bookEntity = new BookEntity();
-        BookMetaEntity bookMetaEntity = mapper.mapToNewBookMetaEntity(dto);
-        this.saveBook(bookEntity, bookMetaEntity);
-        return mapper.mapToDTO(bookMetaEntity);
+        BookMetaEntity metaEntity = mapper.mapToNewBookMetaEntity(dto);
+        this.saveBook(bookEntity, metaEntity);
+        return mapper.mapToBookResponseDTO(bookEntity, metaEntity);
     }
 
     @Override
-    public BookDTO updateBook(BookDTO dto) {
-        BookEntity book = entityService.findById(dto.getId())
+    public BookResponseDTO updateBook(UpdateBookDTO dto) {
+        BookEntity bookEntity = bookEntityService.findById(dto.getId())
                 .orElseThrow(super.supplyRecordNotFoundException(RECORD_NOT_FOUND_MSG_KEY));
 
-        BookMetaEntity meta = metaEntityService.findById(book.getMetaId())
+        BookMetaEntity metaEntity = metaEntityService.findById(bookEntity.getMetaId())
                 .orElseThrow(super.supplyRecordNotFoundException(RECORD_NOT_FOUND_MSG_KEY));
 
-        mapper.mapToUpdatableBookMetaEntity(meta, dto);
+        mapper.fillUpdatableEntity(metaEntity, dto);
 
-        saveBook(book, meta);
-        return mapper.mapToDTO(meta);
+        saveBook(bookEntity, metaEntity);
+        return mapper.mapToBookResponseDTO(bookEntity, metaEntity);
     }
 
     @Override
-    public BookDTO deleteBook(long id) {
-        BookEntity book = entityService.delete(id);
-        BookMetaEntity meta = metaEntityService.delete(book.getMetaId());
-        return mapper.mapToDTO(meta);
+    public List<BookResponseDTO> issueBook(IssueBookDTO dto) {
+
+        if(CollectionUtils.isEmpty(dto.getBookIds()))
+            throw new BadRequestException("validation.constraints.issueBook.Empty.message");
+
+        if(dto.getBookIds().size() > props.getMaxIssueBook())
+            throw new BadRequestException("validation.constraints.issueBook.Invalid.Max.message");
+
+        UserEntity userEntity = userEntityService.findById(dto.getUserId())
+                .orElseThrow(super.supplyRecordNotFoundException("validation.constraints.userId.NotFound.message"));
+
+        List<BookEntity> bookEntities = bookEntityService.findBooksByIdIn(dto.getBookIds());
+        if(CollectionUtils.isEmpty(bookEntities))
+            throw new RecordNotFoundException(messageHelper.getLocalMessage(RECORD_NOT_FOUND_MSG_KEY));
+
+        List<BookMetaEntity> metaEntities = metaEntityService.findMetaInBooks(bookEntities);
+        if(CollectionUtils.isEmpty(metaEntities))
+            throw new RecordNotFoundException(messageHelper.getLocalMessage(RECORD_NOT_FOUND_MSG_KEY));
+
+        mapper.fillIssuableEntity(bookEntities, metaEntities, userEntity);
+        bookEntityService.save(bookEntities);
+        metaEntityService.save(metaEntities);
+        return mapper.mapToBookResponseDTO(metaEntities, userEntity);
+    }
+
+    @Override
+    public BookResponseDTO deleteBook(long id) {
+        BookEntity bookEntity = bookEntityService.delete(id);
+        BookMetaEntity metaEntity = metaEntityService.delete(bookEntity.getMetaId());
+        return mapper.mapToBookResponseDTO(bookEntity, metaEntity);
     }
 
     private void saveBook(BookEntity entity, BookMetaEntity metaEntity) {
-        entityService.save(entity);
+        bookEntityService.save(entity);
         metaEntity.setBookId(entity.getId());
         metaEntityService.save(metaEntity);
         entity.setMetaId(metaEntity.getId());
-        entityService.save(entity);
+        bookEntityService.save(entity);
     }
+
+
 }

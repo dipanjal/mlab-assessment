@@ -2,11 +2,15 @@ package com.mlab.assessment.service.book;
 
 import com.mlab.assessment.entity.BookEntity;
 import com.mlab.assessment.entity.BookMetaEntity;
-import com.mlab.assessment.model.request.book.BookDTO;
+import com.mlab.assessment.entity.UserEntity;
 import com.mlab.assessment.model.request.book.CreateBookDTO;
+import com.mlab.assessment.model.request.book.UpdateBookDTO;
+import com.mlab.assessment.model.response.book.BookResponseDTO;
+import com.mlab.assessment.model.response.book.IssuedUser;
 import com.mlab.assessment.utils.DateTimeUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -21,31 +25,6 @@ import static com.mlab.assessment.utils.DateTimeUtils.toAPIDateFormat;
  */
 @Component
 public class BookMapper {
-    public BookDTO mapToDTO(BookMetaEntity meta){
-        return BookDTO.builder()
-                .id(meta.getBookId())
-                .name(meta.getName())
-                .authorName(meta.getAuthorName())
-                .description(meta.getDescription())
-                .noOfCopy(meta.getNoOfCopy())
-                .releaseDate(toAPIDateFormat(meta.getReleaseDate()))
-                .build();
-    }
-
-    public List<BookDTO> mapToDTO(List<BookMetaEntity> metas){
-        /*Map<Long, BookMetaEntity> metaMap = metas.stream()
-                .collect(Collectors.toMap(BookMetaEntity::getId, Function.identity()));
-
-        return books.stream()
-                .map(b -> mapToDTO(b , metaMap.get(b.getMetaId())))
-                .collect(Collectors.toList());*/
-
-        return metas.stream().map(this::mapToDTO).collect(Collectors.toList());
-    }
-
-    /*public BookEntity mapToNewBookEntity(CreateBookDTO dto){
-        return new BookEntity();
-    }*/
 
     public BookMetaEntity mapToNewBookMetaEntity(CreateBookDTO dto){
         return new BookMetaEntity(
@@ -58,17 +37,102 @@ public class BookMapper {
         );
     }
 
-/*    public BookEntity mapToUpdatableBookEntity(BookEntity entityToUpdate, BookDTO dto){
-        entityToUpdate.setName(dto.getName());
-        return entityToUpdate;
-    }*/
-
-    public BookMetaEntity mapToUpdatableBookMetaEntity(BookMetaEntity entityToUpdate, BookDTO dto){
+    public void fillUpdatableEntity(BookMetaEntity entityToUpdate, UpdateBookDTO dto){
         entityToUpdate.setAuthorName(dto.getAuthorName());
         entityToUpdate.setDescription(dto.getDescription());
         entityToUpdate.setNoOfCopy(dto.getNoOfCopy());
         entityToUpdate.setReleaseDate(
                 DateTimeUtils.toDBDateFormat(dto.getReleaseDate()));
-        return entityToUpdate;
+    }
+
+    public void fillIssuableEntity(List<BookEntity> entityList, List<BookMetaEntity> metaEntityList, UserEntity user){
+
+        Map<Long, BookMetaEntity> bookMetaMap = this.getAsMetaMap(metaEntityList);
+
+        entityList.forEach(book -> {
+            BookMetaEntity metaEntity = bookMetaMap.get(book.getMetaId());
+            metaEntity.setNoOfCopy(metaEntity.getNoOfCopy() - 1);
+            book.addUser(user);
+            user.addBook(book);
+        });
+    }
+
+    public BookResponseDTO mapToBookResponseDTO(BookMetaEntity metaEntity, IssuedUser issuedUser){
+
+        return BookResponseDTO.builder()
+                .id(metaEntity.getBookId())
+                .name(metaEntity.getName())
+                .authorName(metaEntity.getAuthorName())
+                .description(metaEntity.getDescription())
+                .noOfCopy(metaEntity.getNoOfCopy())
+                .releaseDate(metaEntity.getReleaseDate())
+                .issuedUsers(Collections.singletonList(issuedUser))
+                .build();
+    }
+
+    public BookResponseDTO mapToBookResponseDTO(BookMetaEntity metaEntity, UserEntity user){
+
+        IssuedUser issuedUser = IssuedUser.builder()
+                .id(user.getId())
+                .name(user.getFullName())
+                .build();
+
+        return this.mapToBookResponseDTO(metaEntity, issuedUser);
+    }
+
+    public List<BookResponseDTO> mapToBookResponseDTO(List<BookMetaEntity> metaEntityList, UserEntity user){
+        return metaEntityList
+                .stream()
+                .map(e -> mapToBookResponseDTO(e, user))
+                .collect(Collectors.toList());
+    }
+
+
+    public BookResponseDTO mapToBookResponseDTO(BookEntity bookEntity, BookMetaEntity metaEntity){
+        return BookResponseDTO
+                .builder()
+                .id(bookEntity.getId())
+                .name(metaEntity.getName())
+                .description(metaEntity.getDescription())
+                .authorName(metaEntity.getAuthorName())
+                .noOfCopy(metaEntity.getNoOfCopy())
+                .releaseDate(toAPIDateFormat(
+                                metaEntity.getReleaseDate()))
+                .issuedUsers(mapToIssuedUserDTO(bookEntity.getUsers()))
+                .build();
+    }
+
+    public List<BookResponseDTO> mapToBookResponseDTO(List<BookEntity> bookEntities,
+                                                      List<BookMetaEntity> bookMetaEntities){
+
+        Map<Long, BookMetaEntity> metaMap = this.getAsMetaMap(bookMetaEntities);
+
+        return bookEntities
+                .stream()
+                .map(book ->
+                        mapToBookResponseDTO(
+                                book, metaMap.get(book.getMetaId())))
+                .collect(Collectors.toList());
+    }
+
+    private Map<Long, BookMetaEntity> getAsMetaMap(List<BookMetaEntity> metaEntityList){
+        return metaEntityList
+                .stream()
+                .collect(Collectors.toMap(BookMetaEntity::getId, Function.identity()));
+    }
+
+    private IssuedUser mapToIssuedUserDTO(UserEntity entity){
+        return IssuedUser
+                .builder()
+                .name(entity.getFullName())
+                .id(entity.getId())
+                .build();
+    }
+
+    private List<IssuedUser> mapToIssuedUserDTO(List<UserEntity> entityList){
+        return entityList
+                .stream()
+                .map(this::mapToIssuedUserDTO)
+                .collect(Collectors.toList());
     }
 }

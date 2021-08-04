@@ -4,8 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author dipanjal
@@ -26,12 +25,19 @@ public class UserEntity extends BaseEntity {
     @Column(name = "full_name")
     private String fullName;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "mlab_user_book",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "book_id")}
     )
-    Set<BookEntity> books = new HashSet<>();
+    List<BookEntity> books = new ArrayList<>();
+
+    public void addBook(BookEntity bookEntity){
+        books.add(bookEntity);
+    }
+    public void removeBook(BookEntity bookEntity){
+        books.add(bookEntity);
+    }
 
     public UserEntity(String username, String fullName) {
         this.username = username;

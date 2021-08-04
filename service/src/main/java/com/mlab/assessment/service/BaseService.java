@@ -1,6 +1,7 @@
 package com.mlab.assessment.service;
 
 import com.mlab.assessment.exception.RecordNotFoundException;
+import com.mlab.assessment.props.AppProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.function.Supplier;
@@ -14,7 +15,9 @@ public abstract class BaseService {
     protected final String RECORD_NOT_FOUND_MSG_KEY="api.response.NOT_FOUND.message";
 
     @Autowired
-    private LocaleMessageHelper messageHelper;
+    protected LocaleMessageHelper messageHelper;
+    @Autowired
+    protected AppProperties props;
 
     protected Supplier<RecordNotFoundException> supplyRecordNotFoundException(String messageKey){
         return this.supplyException(

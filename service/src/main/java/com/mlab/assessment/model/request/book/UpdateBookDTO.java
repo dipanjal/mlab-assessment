@@ -16,27 +16,27 @@ import javax.validation.constraints.Pattern;
 @Getter
 @Setter
 @Builder
-public class BookDTO {
-    @Min(value = 1, message = "Book ID is required")
+public class UpdateBookDTO {
+    @Min(value = 1, message = "validation.constraints.bookId.NotNull.message")
     private long id;
 
-    @NotBlank(message = "${org.hibernate.validator.constraints.NotBlank.message}")
+    @NotBlank(message = "validation.constraints.bookName.NotNull.message")
     private String name;
 
     @JsonProperty("author_name")
-    @NotBlank(message = "Author name can not be empty")
+    @NotBlank(message = "validation.constraints.authorName.NotNull.message")
     private String authorName;
 
-    @NotBlank(message = "Description can not be empty")
+    @NotBlank(message = "validation.constraints.description.NotNull.message")
     private String description;
 
-    @Min(value = 1, message = "Minimum Number of Copy is 1")
+    @Min(value = 1, message = "validation.constraints.noOfCopy.Min.message")
     @JsonProperty("no_of_copy")
     private int noOfCopy;
 
-    @NotBlank(message = "Release Date can not be empty")
+    @NotBlank(message = "validation.constraints.releaseDate.NotNull.message")
     @Pattern(regexp = "^([0-2][0-9]|(3)[0-1])-(((0)[0-9])|((1)[0-2]))-\\d{4}$",
-            message = "Invalid Release Date, Example: 12-05-2012")
+            message = "validation.constraints.releaseDate.Invalid.message")
     @JsonProperty("release_date")
     private String releaseDate;
 }
