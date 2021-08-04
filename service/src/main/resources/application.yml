@@ -32,3 +32,6 @@ message-property:
   destination-acc-not-found-error: Destination Account Not Found
   insufficient-balance-error: Insufficient Balance
   request-id-duplicate-error: Duplicate Request ID found
+
+application:
+  request-id-header: request-id
