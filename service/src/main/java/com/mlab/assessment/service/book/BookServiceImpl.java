@@ -48,7 +48,7 @@ public class BookServiceImpl extends BaseService implements BookService {
 
     @Override
     public BookDTO createBook(CreateBookDTO dto) {
-        BookEntity bookEntity = mapper.mapToNewBookEntity(dto);
+        BookEntity bookEntity = new BookEntity();
         BookMetaEntity bookMetaEntity = mapper.mapToNewBookMetaEntity(dto);
         this.saveBook(bookEntity, bookMetaEntity);
         return mapper.mapToDTO(bookEntity, bookMetaEntity);
@@ -62,7 +62,7 @@ public class BookServiceImpl extends BaseService implements BookService {
         BookMetaEntity meta = metaEntityService.findById(book.getMetaId())
                 .orElseThrow(super.supplyRecordNotFoundException("api.response.NOT_FOUND.message"));
 
-        mapper.mapToUpdatableBookEntity(book, dto);
+//        mapper.mapToUpdatableBookEntity(book, dto);
         mapper.mapToUpdatableBookMetaEntity(meta, dto);
 
         saveBook(book, meta);

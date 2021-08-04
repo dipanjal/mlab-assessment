@@ -1,6 +1,7 @@
 package com.mlab.assessment.model.request.book;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,7 @@ import javax.validation.constraints.Pattern;
  */
 @Getter
 @Setter
+@Builder
 public class CreateBookDTO {
 
     @NotBlank(message = "validation.constraints.bookName.NotNull.message")

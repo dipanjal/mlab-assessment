@@ -3,9 +3,11 @@ package com.mlab.assessment;
 import com.mlab.assessment.entity.BookEntity;
 import com.mlab.assessment.entity.BookMetaEntity;
 import com.mlab.assessment.entity.UserEntity;
+import com.mlab.assessment.model.request.book.CreateBookDTO;
 import com.mlab.assessment.repository.BookMetaRepository;
 import com.mlab.assessment.repository.BookRepository;
 import com.mlab.assessment.repository.UserRepository;
+import com.mlab.assessment.service.book.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -28,6 +30,8 @@ public class ApplicationSeeder implements ApplicationListener<ContextRefreshedEv
     private final BookRepository bookRepository;
     private final BookMetaRepository bookMetaRepository;
 
+    private final BookService bookService;
+
     private void populateUsers(){
 
         if(CollectionUtils.isEmpty(userRepository.findAll())){
@@ -44,19 +48,25 @@ public class ApplicationSeeder implements ApplicationListener<ContextRefreshedEv
         if(CollectionUtils.isEmpty(bookRepository.findAll())){
             bookMetaRepository.deleteAll();
 
-            BookEntity bookEntity = new BookEntity("Advanced Java", 0);
-            bookRepository.save(bookEntity);
-            BookMetaEntity metaEntity = new BookMetaEntity("Rayan Goslin", "shaskhd", 10, "2012-03-18" ,bookEntity.getId());
-            bookMetaRepository.save(metaEntity);
-            bookEntity.setMetaId(metaEntity.getId());
-            bookRepository.save(bookEntity);
+            bookService.createBook(
+                    CreateBookDTO.builder()
+                            .name("Advanced Java")
+                            .authorName("Rayan Goslin")
+                            .description("Advanced Java Programming Book")
+                            .noOfCopy(10)
+                            .releaseDate("18-03-2012")
+                            .build()
+            );
 
-            BookEntity bookEntity2 = new BookEntity("C++", 0);
-            bookRepository.save(bookEntity2);
-            BookMetaEntity metaEntity2 = new BookMetaEntity("Jhon Doe", "C++", 10, "2018-10-07", bookEntity2.getId());
-            bookMetaRepository.save(metaEntity2);
-            bookEntity2.setMetaId(metaEntity2.getId());
-            bookRepository.save(bookEntity2);
+            bookService.createBook(
+                    CreateBookDTO.builder()
+                            .name("C++")
+                            .authorName("Harvard Shield")
+                            .description("Basic C++ Programming Book")
+                            .noOfCopy(10)
+                            .releaseDate("05-02-2001")
+                            .build()
+            );
         }
     }
 

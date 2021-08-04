@@ -24,7 +24,7 @@ public class BookMapper {
     public BookDTO mapToDTO(BookEntity book, BookMetaEntity meta){
         return BookDTO.builder()
                 .id(book.getId())
-                .name(book.getName())
+                .name(meta.getName())
                 .authorName(meta.getAuthorName())
                 .description(meta.getDescription())
                 .noOfCopy(meta.getNoOfCopy())
@@ -41,12 +41,13 @@ public class BookMapper {
                 .collect(Collectors.toList());
     }
 
-    public BookEntity mapToNewBookEntity(CreateBookDTO dto){
-        return new BookEntity(dto.getName(), 0);
-    }
+    /*public BookEntity mapToNewBookEntity(CreateBookDTO dto){
+        return new BookEntity();
+    }*/
 
     public BookMetaEntity mapToNewBookMetaEntity(CreateBookDTO dto){
         return new BookMetaEntity(
+                dto.getName(),
                 dto.getAuthorName(),
                 dto.getDescription(),
                 dto.getNoOfCopy(),
@@ -55,10 +56,10 @@ public class BookMapper {
         );
     }
 
-    public BookEntity mapToUpdatableBookEntity(BookEntity entityToUpdate, BookDTO dto){
+/*    public BookEntity mapToUpdatableBookEntity(BookEntity entityToUpdate, BookDTO dto){
         entityToUpdate.setName(dto.getName());
         return entityToUpdate;
-    }
+    }*/
 
     public BookMetaEntity mapToUpdatableBookMetaEntity(BookMetaEntity entityToUpdate, BookDTO dto){
         entityToUpdate.setAuthorName(dto.getAuthorName());

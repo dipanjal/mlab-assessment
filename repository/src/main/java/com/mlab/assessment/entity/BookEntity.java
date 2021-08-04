@@ -22,17 +22,9 @@ public class BookEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name")
-    private String name;
-
     @Column(name = "meta_id", nullable = false)
     private long metaId;
 
     @ManyToMany(mappedBy = "books")
     private Collection<UserEntity> users = new HashSet<>();
-
-    public BookEntity(String name, long metaId) {
-        this.name = name;
-        this.metaId = metaId;
-    }
 }

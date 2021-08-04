@@ -20,6 +20,9 @@ public class BookMetaEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "author_name")
     private String authorName;
 
@@ -36,7 +39,8 @@ public class BookMetaEntity extends BaseEntity {
     private long bookId;
 
     @Builder
-    public BookMetaEntity(String authorName, String description, int noOfCopy, String releaseDate, long bookId) {
+    public BookMetaEntity(String name, String authorName, String description, int noOfCopy, String releaseDate, long bookId) {
+        this.name = name;
         this.authorName = authorName;
         this.description = description;
         this.noOfCopy = noOfCopy;
