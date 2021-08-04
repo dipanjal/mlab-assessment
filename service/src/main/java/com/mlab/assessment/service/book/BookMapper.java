@@ -21,9 +21,9 @@ import static com.mlab.assessment.utils.DateTimeUtils.toAPIDateFormat;
  */
 @Component
 public class BookMapper {
-    public BookDTO mapToDTO(BookEntity book, BookMetaEntity meta){
+    public BookDTO mapToDTO(BookMetaEntity meta){
         return BookDTO.builder()
-                .id(book.getId())
+                .id(meta.getBookId())
                 .name(meta.getName())
                 .authorName(meta.getAuthorName())
                 .description(meta.getDescription())
@@ -32,13 +32,15 @@ public class BookMapper {
                 .build();
     }
 
-    public List<BookDTO> mapToDTOs(List<BookEntity> books, List<BookMetaEntity> metas){
-        Map<Long, BookMetaEntity> metaMap = metas.stream()
+    public List<BookDTO> mapToDTO(List<BookMetaEntity> metas){
+        /*Map<Long, BookMetaEntity> metaMap = metas.stream()
                 .collect(Collectors.toMap(BookMetaEntity::getId, Function.identity()));
 
         return books.stream()
                 .map(b -> mapToDTO(b , metaMap.get(b.getMetaId())))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+
+        return metas.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     /*public BookEntity mapToNewBookEntity(CreateBookDTO dto){

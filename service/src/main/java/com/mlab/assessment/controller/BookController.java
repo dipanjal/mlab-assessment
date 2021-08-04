@@ -1,6 +1,7 @@
 package com.mlab.assessment.controller;
 
 import com.mlab.assessment.model.ApiResponse;
+import com.mlab.assessment.model.dto.BookSearchDTO;
 import com.mlab.assessment.model.request.book.BookDTO;
 import com.mlab.assessment.model.request.book.CreateBookDTO;
 import com.mlab.assessment.service.book.BookService;
@@ -37,6 +38,13 @@ public class BookController extends BaseController {
         return ResponseEntity.ok(
                 ResponseBuilder.buildOkResponse(
                         bookService.findBookById(id)));
+    }
+
+    @PostMapping("/book/search")
+    public ResponseEntity<ApiResponse<List<BookDTO>>> searchBook(@RequestBody BookSearchDTO dto){
+        return ResponseEntity.ok(
+                ResponseBuilder.buildOkResponse(
+                        bookService.searchBook(dto)));
     }
 
     @PostMapping("/book/create")

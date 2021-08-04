@@ -11,6 +11,8 @@ import java.util.function.Supplier;
  */
 public abstract class BaseService {
 
+    protected final String RECORD_NOT_FOUND_MSG_KEY="api.response.NOT_FOUND.message";
+
     @Autowired
     private LocaleMessageHelper messageHelper;
 

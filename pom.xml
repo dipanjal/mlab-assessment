@@ -23,8 +23,6 @@
 	<name>root-pom</name>
 	<description>Demo project Selise Assessment Test </description>
 
-
-
 	<properties>
 		<java.version>11</java.version>
 		<maven.compiler.source>11</maven.compiler.source>
@@ -85,9 +83,6 @@
 				<artifactId>springdoc-openapi-ui</artifactId>
 				<version>${open-api.version}</version>
 			</dependency>
-
-
-
 		</dependencies>
 	</dependencyManagement>
 
