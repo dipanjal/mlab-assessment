@@ -1,12 +1,16 @@
 package com.mlab.assessment.service.user;
 
+import com.mlab.assessment.entity.BookEntity;
 import com.mlab.assessment.entity.BookMetaEntity;
 import com.mlab.assessment.entity.UserEntity;
+import com.mlab.assessment.exception.BadRequestException;
 import com.mlab.assessment.exception.RecordNotFoundException;
 import com.mlab.assessment.model.dto.CreateUserDTO;
+import com.mlab.assessment.model.dto.SubmitBookRequestDTO;
 import com.mlab.assessment.model.dto.UpdateUserDTO;
 import com.mlab.assessment.model.response.user.UserResponseDTO;
 import com.mlab.assessment.service.BaseService;
+import com.mlab.assessment.service.BookEntityService;
 import com.mlab.assessment.service.BookMetaEntityService;
 import com.mlab.assessment.service.UserEntityService;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +18,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * @author dipanjal
@@ -29,6 +30,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     private final UserEntityService userEntityService;
     private final BookMetaEntityService metaEntityService;
+    private final BookEntityService bookEntityService;
     private final UserMapper mapper;
 
     @Override
@@ -72,6 +74,32 @@ public class UserServiceImpl extends BaseService implements UserService {
         }catch (RecordNotFoundException e) {
             throw new RecordNotFoundException(messageHelper.getLocalMessage(e.getMessage()));
         }
+    }
+
+    @Override
+    public UserResponseDTO submitBooks(SubmitBookRequestDTO dto) {
+        if(CollectionUtils.isEmpty(dto.getBookIds()))
+            throw new BadRequestException(messageHelper.getLocalMessage("api.response.BAD_REQUEST.message"));
+
+        UserEntity userEntity = userEntityService.findById(dto.getUserId())
+                .orElseThrow(supplyRecordNotFoundException("validation.constraints.userId.NotFound.message"));
+
+        List<BookEntity> bookEntities = bookEntityService.findBooksByIdIn(dto.getBookIds());
+        if(CollectionUtils.isEmpty(bookEntities))
+            throw new RecordNotFoundException(messageHelper.getLocalMessage(RECORD_NOT_FOUND_MSG_KEY));
+
+        List<BookMetaEntity> metaEntities = metaEntityService.findMetaInBooks(bookEntities);
+        if(CollectionUtils.isEmpty(metaEntities))
+            throw new RecordNotFoundException(messageHelper.getLocalMessage(RECORD_NOT_FOUND_MSG_KEY));
+
+        userEntity.getBooks().removeIf(book -> dto.getBookIds().contains(book.getId()));
+        bookEntities.forEach(book -> book.getUsers().remove(userEntity));
+        metaEntities.forEach(meta -> meta.setNoOfCopy(meta.getNoOfCopy() + 1));
+        userEntityService.save(userEntity);
+        metaEntityService.save(metaEntities);
+
+        List<BookMetaEntity> newMetaList = metaEntityService.findMetaInBooks(userEntity.getBooks());
+        return mapper.mapToDto(userEntity, newMetaList);
     }
 
     private UserResponseDTO getUserResponseDTO(UserEntity entity) {
