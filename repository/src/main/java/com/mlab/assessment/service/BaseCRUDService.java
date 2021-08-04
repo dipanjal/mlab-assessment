@@ -1,6 +1,7 @@
 package com.mlab.assessment.service;
 
 import com.mlab.assessment.exception.RecordNotFoundException;
+import org.springframework.context.MessageSource;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 

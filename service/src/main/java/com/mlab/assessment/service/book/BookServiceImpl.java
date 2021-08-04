@@ -121,9 +121,13 @@ public class BookServiceImpl extends BaseService implements BookService {
 
     @Override
     public BookResponseDTO deleteBook(long id) {
-        BookEntity bookEntity = bookEntityService.delete(id);
-        BookMetaEntity metaEntity = metaEntityService.delete(bookEntity.getMetaId());
-        return mapper.mapToBookResponseDTO(bookEntity, metaEntity);
+        try{
+            BookEntity bookEntity = bookEntityService.delete(id);
+            BookMetaEntity metaEntity = metaEntityService.delete(bookEntity.getMetaId());
+            return mapper.mapToBookResponseDTO(bookEntity, metaEntity);
+        }catch (RecordNotFoundException e){
+            throw new RecordNotFoundException(messageHelper.getLocalMessage(e.getMessage()));
+        }
     }
 
     private void saveBook(BookEntity entity, BookMetaEntity metaEntity) {
