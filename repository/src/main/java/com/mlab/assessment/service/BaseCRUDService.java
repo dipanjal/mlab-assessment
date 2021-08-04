@@ -38,12 +38,12 @@ public abstract class BaseCRUDService<ENTITY, REPO extends JpaRepository<ENTITY,
     }
 
     @Transactional(readOnly = true)
-    public boolean delete(long id) {
+    public ENTITY delete(long id) {
         return repository.findById(id)
                 .map(entity -> {
                     repository.delete(entity);
-                    return true;
-                }).orElseThrow(RecordNotFoundException::new);
+                    return entity;
+                }).orElseThrow(() -> new RecordNotFoundException("api.response.NOT_FOUND.message"));
     }
 
 }

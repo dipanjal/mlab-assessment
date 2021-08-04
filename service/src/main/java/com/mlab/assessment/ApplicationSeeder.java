@@ -46,14 +46,14 @@ public class ApplicationSeeder implements ApplicationListener<ContextRefreshedEv
 
             BookEntity bookEntity = new BookEntity("Advanced Java", 0);
             bookRepository.save(bookEntity);
-            BookMetaEntity metaEntity = new BookMetaEntity("Rayan Goslin", "shaskhd", 10, bookEntity.getId());
+            BookMetaEntity metaEntity = new BookMetaEntity("Rayan Goslin", "shaskhd", 10, "2012-03-18" ,bookEntity.getId());
             bookMetaRepository.save(metaEntity);
             bookEntity.setMetaId(metaEntity.getId());
             bookRepository.save(bookEntity);
 
             BookEntity bookEntity2 = new BookEntity("C++", 0);
             bookRepository.save(bookEntity2);
-            BookMetaEntity metaEntity2 = new BookMetaEntity("Jhon Doe", "C++", 10, bookEntity2.getId());
+            BookMetaEntity metaEntity2 = new BookMetaEntity("Jhon Doe", "C++", 10, "2018-10-07", bookEntity2.getId());
             bookMetaRepository.save(metaEntity2);
             bookEntity2.setMetaId(metaEntity2.getId());
             bookRepository.save(bookEntity2);

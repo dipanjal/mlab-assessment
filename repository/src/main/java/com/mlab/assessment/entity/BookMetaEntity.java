@@ -1,5 +1,6 @@
 package com.mlab.assessment.entity;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,15 +30,17 @@ public class BookMetaEntity extends BaseEntity {
     private int noOfCopy;
 
     @Column(name = "release_date")
-    private Date releaseDate;
+    private String releaseDate;
 
     @Column(name = "book_id", nullable = false)
     private long bookId;
 
-    public BookMetaEntity(String authorName, String description, int noOfCopy, long bookId) {
+    @Builder
+    public BookMetaEntity(String authorName, String description, int noOfCopy, String releaseDate, long bookId) {
         this.authorName = authorName;
         this.description = description;
         this.noOfCopy = noOfCopy;
+        this.releaseDate = releaseDate;
         this.bookId = bookId;
     }
 }

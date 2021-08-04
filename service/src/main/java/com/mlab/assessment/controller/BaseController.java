@@ -1,5 +1,6 @@
 package com.mlab.assessment.controller;
 
+import com.mlab.assessment.exception.BadRequestException;
 import com.mlab.assessment.service.LocaleMessageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -20,11 +21,16 @@ public class BaseController {
         this.messageHelper = messageHelper;
     }
 
-    protected String getJoinedErrorMessage(BindingResult bindingResult){
+    private String getJoinedErrorMessage(BindingResult bindingResult){
         return bindingResult.getAllErrors()
                 .stream()
                 .map(ObjectError::getDefaultMessage)
                 .map(messageHelper::getLocalMessage)
                 .collect(Collectors.joining(", "));
+    }
+
+    protected void throwIfHasError(BindingResult result){
+        if(result.hasErrors())
+            throw new BadRequestException(this.getJoinedErrorMessage(result));
     }
 }

@@ -33,7 +33,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RecordNotFoundException.class)
     public ResponseEntity<?> recordNotFoundExceptionHandler(RecordNotFoundException ex, WebRequest request) {
         this.logException(ex);
-        return this.buildResponseEntity(HttpStatus.NO_CONTENT, ex);
+
+        // @Todo NOT_FOUND needs to be changed with NO_CONTENT
+        return this.buildResponseEntity(HttpStatus.NOT_FOUND, ex);
     }
 
     @ExceptionHandler(Exception.class)
