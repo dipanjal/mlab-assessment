@@ -1,5 +1,6 @@
 package com.mlab.assessment.service.user;
 
+import com.mlab.assessment.annotation.EnableLogging;
 import com.mlab.assessment.entity.BookMetaEntity;
 import com.mlab.assessment.entity.UserEntity;
 import com.mlab.assessment.exception.RecordNotFoundException;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@EnableLogging
 public class UserServiceImpl extends BaseService implements UserService {
 
     private final UserEntityService userEntityService;

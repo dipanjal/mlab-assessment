@@ -1,5 +1,6 @@
 package com.mlab.assessment.service.user;
 
+import com.mlab.assessment.annotation.EnableLogging;
 import com.mlab.assessment.model.dto.CreateUserDTO;
 import com.mlab.assessment.model.dto.UpdateUserDTO;
 import com.mlab.assessment.model.response.user.UserResponseDTO;
@@ -11,6 +12,7 @@ import java.util.List;
  * @author dipanjal
  * @since 0.0.1
  */
+
 public interface UserService {
 
     @Transactional(readOnly = true)

@@ -5,6 +5,8 @@ server:
 spring:
   profiles:
     active: ${ACTIVE_PROFILE:default}
+  aop:
+    auto: true
 
 message-property:
   transfer-successful: Transaction successful
@@ -46,8 +48,8 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
+        show_sql: false
+        format_sql: false
         enable_lazy_load_no_trans: true
 
 ---
