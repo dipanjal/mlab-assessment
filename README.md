@@ -15,4 +15,4 @@ API Endpoints are Documented Here
 [linkedin-url]: https://www.linkedin.com/in/dipanjalmaitra/
 [gmail-shield]: https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white
 [email-address]: mailto:dipanjalmaitra@gmail.com
-[swagger-url]: localhost:8080/swagger-ui.html
+[swagger-url]: http://localhost:8080/swagger-ui.html
