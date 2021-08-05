@@ -1,5 +1,6 @@
 package com.mlab.assessment.service.book;
 
+import com.mlab.assessment.annotation.EnableLogging;
 import com.mlab.assessment.entity.BookEntity;
 import com.mlab.assessment.entity.BookMetaEntity;
 import com.mlab.assessment.entity.UserEntity;
@@ -31,6 +32,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@EnableLogging
 public class BookServiceImpl extends BaseService implements BookService {
 
     private final BookEntityService bookEntityService;
