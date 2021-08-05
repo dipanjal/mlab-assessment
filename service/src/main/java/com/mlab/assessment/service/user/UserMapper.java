@@ -35,6 +35,7 @@ public class UserMapper {
                 .id(entity.getId())
                 .name(entity.getFullName())
                 .userName(entity.getUsername())
+                .email(entity.getEmail())
                 .build();
     }
 
@@ -45,6 +46,7 @@ public class UserMapper {
                 .id(entity.getId())
                 .name(entity.getFullName())
                 .userName(entity.getUsername())
+                .email(entity.getEmail())
                 .issuedBooks(this.mapToIssueBooks(entity.getBooks(), metaMap))
                 .build();
     }
@@ -59,6 +61,7 @@ public class UserMapper {
                         .id(user.getId())
                         .name(user.getFullName())
                         .userName(user.getUsername())
+                        .email(user.getEmail())
                         .issuedBooks(mapToIssueBooks(user.getBooks(), metaMap))
                         .build()
                 ).collect(Collectors.toList());
@@ -85,12 +88,13 @@ public class UserMapper {
 
     /** ENTITY MAPPING */
     public UserEntity mapToNewUserEntity(CreateUserDTO dto){
-        return new UserEntity(dto.getUserName(), dto.getFullName());
+        return new UserEntity(dto.getUserName(), dto.getFullName(), dto.getEmail());
     }
 
     public void fillUpdatableEntity(UserEntity entity, UpdateUserDTO dto){
         entity.setUsername(dto.getUserName());
         entity.setFullName(dto.getFullName());
+        entity.setEmail(dto.getEmail());
     }
 
 }

@@ -48,9 +48,10 @@ public class LoggingAspect {
     }
 
     @Around(value = "serviceLoggingPointcut() && enableLoggingPointcut()")
-    public void performanceLoggingAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object performanceLoggingAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
         traceLog(joinPoint);
         proceedAndLogPerformance(joinPoint);
+        return joinPoint.proceed();
     }
 
     private void traceLog(JoinPoint joinPoint){

@@ -4,7 +4,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author dipanjal
@@ -25,6 +26,9 @@ public class UserEntity extends BaseEntity {
     @Column(name = "full_name")
     private String fullName;
 
+    @Column(name = "email")
+    private String email;
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "mlab_user_book",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -39,8 +43,9 @@ public class UserEntity extends BaseEntity {
         books.add(bookEntity);
     }
 
-    public UserEntity(String username, String fullName) {
+    public UserEntity(String username, String fullName, String email) {
         this.username = username;
         this.fullName = fullName;
+        this.email = email;
     }
 }

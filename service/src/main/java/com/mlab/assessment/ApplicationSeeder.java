@@ -1,7 +1,5 @@
 package com.mlab.assessment;
 
-import com.mlab.assessment.entity.BookEntity;
-import com.mlab.assessment.entity.BookMetaEntity;
 import com.mlab.assessment.entity.UserEntity;
 import com.mlab.assessment.model.request.book.CreateBookDTO;
 import com.mlab.assessment.repository.BookMetaRepository;
@@ -36,8 +34,8 @@ public class ApplicationSeeder implements ApplicationListener<ContextRefreshedEv
 
         if(CollectionUtils.isEmpty(userRepository.findAll())){
             List<UserEntity> userEntities = List.of(
-                    new UserEntity("jhon_d","Jhon Doe"),
-                    new UserEntity("mariya_tk","Mariya Takeuchi")
+                    new UserEntity("jhon_d","Jhon Doe", "jhon@example.com"),
+                    new UserEntity("mariya_tk","Mariya Takeuchi","mariya@example.com")
             );
             userRepository.saveAll(userEntities);
         }
