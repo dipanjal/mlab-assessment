@@ -1,43 +1,9 @@
 # Assessment Project
 A Simple Rest API Project for Assessment Test
 
-## Endpoints
+## [Swagger API Doc][swagger-url]
+API Endpoints are Documented Here
 
-* Welcome Url
-    - Method `GET`
-    - URL [localhost:8080/]()
-
-* Transaction URL
-    - Method `POST`
-    - URL [localhost:8080/transaction]()
-    - Request Body
-        ```json
-        {
-            "requestId": "A32W4ER2341",
-            "requester": "XYZ App",
-            "transactionType": "VFJBTlNGRVI=",
-            "sourceAccountNumber": "MzIzNDEyMDA5MjM0ODc=",
-            "amount": "MTUwMC41MA==",
-            "destinationAccountNumber": "MDAxMjQxMDA5MjExNDM5",
-            "note": "Transferring amount"
-        }
-        ```
-* Reverse Transaction
-  - Method `POST`
-  - URL [localhost:8080/transaction]()
-  - Request Body
-      ```json
-      {
-          "requestId": "A32W4ER2341",
-          "requester": "XYZ App",
-          "transactionType": "UkVWRVJTRQ==",
-          "sourceAccountNumber": "MzIzNDEyMDA5MjM0ODc=",
-          "amount": "MTUwMC41MA==",
-          "destinationAccountNumber": "MDAxMjQxMDA5MjExNDM5",
-          "note": "Reversing Transaction"
-      }
-      ```
-    
 ## Contact
 
 [![Gmail][gmail-shield]][email-address]
@@ -49,3 +15,4 @@ A Simple Rest API Project for Assessment Test
 [linkedin-url]: https://www.linkedin.com/in/dipanjalmaitra/
 [gmail-shield]: https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white
 [email-address]: mailto:dipanjalmaitra@gmail.com
+[swagger-url]: localhost:8080/swagger-ui.html
