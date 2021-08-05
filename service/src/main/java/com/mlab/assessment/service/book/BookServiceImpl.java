@@ -7,6 +7,7 @@ import com.mlab.assessment.entity.UserEntity;
 import com.mlab.assessment.exception.BadRequestException;
 import com.mlab.assessment.exception.RecordNotFoundException;
 import com.mlab.assessment.model.dto.BookSearchDTO;
+import com.mlab.assessment.model.dto.EmailDTO;
 import com.mlab.assessment.model.dto.SubmitBookRequestDTO;
 import com.mlab.assessment.model.request.book.CreateBookDTO;
 import com.mlab.assessment.model.request.book.IssueBookRequestDTO;
@@ -17,6 +18,7 @@ import com.mlab.assessment.service.BaseService;
 import com.mlab.assessment.service.BookEntityService;
 import com.mlab.assessment.service.BookMetaEntityService;
 import com.mlab.assessment.service.UserEntityService;
+import com.mlab.assessment.service.email.EmailService;
 import com.mlab.assessment.service.user.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +40,8 @@ public class BookServiceImpl extends BaseService implements BookService {
     private final BookEntityService bookEntityService;
     private final BookMetaEntityService metaEntityService;
     private final UserEntityService userEntityService;
+    private final EmailService emailService;
+
     private final BookMapper mapper;
     private final UserMapper userMapper;
 
@@ -126,6 +130,12 @@ public class BookServiceImpl extends BaseService implements BookService {
         bookEntityService.save(bookEntities);
         metaEntityService.save(metaEntities);
 
+        emailService.sendEmail(EmailDTO
+                .builder()
+                .email(userEntity.getEmail())
+                .body(String.format("Book issued by: %s", userEntity.getFullName()))
+                .build());
+
         return userMapper.mapToDto(
                 userEntity,
                 metaEntityService.findMetaInBooks(userEntity.getBooks())
@@ -152,6 +162,12 @@ public class BookServiceImpl extends BaseService implements BookService {
         mapper.fillBookSubmissionEntity(userEntity, dto.getBookIds(), issuedBooks, metaEntities);
         userEntityService.save(userEntity);
         metaEntityService.save(metaEntities);
+
+        emailService.sendEmail(EmailDTO
+                .builder()
+                .email(userEntity.getEmail())
+                .body(String.format("Book submitted by: %s", userEntity.getFullName()))
+                .build());
 
         List<BookMetaEntity> newMetaList = metaEntityService.findMetaInBooks(userEntity.getBooks());
         return userMapper.mapToDto(userEntity, newMetaList);
