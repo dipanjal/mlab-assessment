@@ -3,26 +3,8 @@ server:
     accept-count: 300
 
 spring:
-  datasource:
-#    url: jdbc:h2:file:C:\Users\BS-308\data\mlab
-#    username: ${DB_USERNAME:sa}
-#    password: ${DB_PASSWORD:password}
-
-    url: ${DB_URL:jdbc:mysql://localhost:3306/mlab_db}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:toor}
-
-  jpa:
-#    database-platform: org.hibernate.dialect.H2Dialect
-    database-platform: org.hibernate.dialect.MySQL5Dialect
-    generate-ddl: true
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-        enable_lazy_load_no_trans: true
+  profiles:
+    active: ${ACTIVE_PROFILE:default}
 
 message-property:
   transfer-successful: Transaction successful
@@ -36,3 +18,58 @@ message-property:
 application:
   request-id-header: request-id
   max-issue-book: 5
+
+---
+spring:
+  config:
+    activate:
+      on-profile: default
+  datasource:
+    url: ${DB_URL:jdbc:h2:mem:mlab_db}
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:password}
+
+    driver-class-name: org.h2.Driver
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 10
+  h2:
+    console:
+      enabled: true
+      settings:
+        trace: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        enable_lazy_load_no_trans: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: stage
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/mlab_db}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:toor}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 10
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        enable_lazy_load_no_trans: true

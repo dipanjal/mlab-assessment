@@ -26,7 +26,7 @@ services:
     ports:
       - 0.0.0.0:8080:8080
     environment:
-      ACTIVE_PROFILE: dev
+      ACTIVE_PROFILE: stage
       DB_USERNAME: root
       DB_PASSWORD: toor
       DB_URL: jdbc:mysql://mlab-mysql-env:3306/mlab_db
