@@ -8,6 +8,7 @@ import com.mlab.assessment.model.request.book.UpdateBookDTO;
 import com.mlab.assessment.model.response.book.BookResponseDTO;
 import com.mlab.assessment.model.response.book.IssuedUser;
 import com.mlab.assessment.utils.DateTimeUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -24,6 +25,7 @@ import static com.mlab.assessment.utils.DateTimeUtils.toAPIDateFormat;
  * @since 0.0.1
  */
 @Component
+@Slf4j
 public class BookMapper {
 
     public BookMetaEntity mapToNewBookMetaEntity(CreateBookDTO dto){
@@ -51,9 +53,13 @@ public class BookMapper {
 
         entityList.forEach(book -> {
             BookMetaEntity metaEntity = bookMetaMap.get(book.getMetaId());
-            metaEntity.setNoOfCopy(metaEntity.getNoOfCopy() - 1);
-            book.addUser(user);
-            user.addBook(book);
+            if(metaEntity.getNoOfCopy() > 0){
+                metaEntity.setNoOfCopy(metaEntity.getNoOfCopy() - 1);
+                book.addUser(user);
+                user.addBook(book);
+            }else{
+                log.info("Can't issue {} ", metaEntity.getName());
+            }
         });
     }
 

@@ -6,6 +6,7 @@ import com.mlab.assessment.model.request.book.IssueBookDTO;
 import com.mlab.assessment.model.request.book.UpdateBookDTO;
 import com.mlab.assessment.model.request.book.CreateBookDTO;
 import com.mlab.assessment.model.response.book.BookResponseDTO;
+import com.mlab.assessment.model.response.user.UserResponseDTO;
 import com.mlab.assessment.service.book.BookService;
 import com.mlab.assessment.utils.ResponseBuilder;
 import lombok.RequiredArgsConstructor;
@@ -68,8 +69,8 @@ public class BookController extends BaseController {
     }
 
     @PostMapping("/book/issue")
-    public ResponseEntity<ApiResponse<List<BookResponseDTO>>> issueBook(@RequestBody @Valid IssueBookDTO dto,
-                                                                  BindingResult result){
+    public ResponseEntity<ApiResponse<UserResponseDTO>> issueBook(@RequestBody @Valid IssueBookDTO dto,
+                                                                        BindingResult result){
         super.throwIfHasError(result);
         return ResponseEntity.ok(
                 ResponseBuilder.buildOkResponse(

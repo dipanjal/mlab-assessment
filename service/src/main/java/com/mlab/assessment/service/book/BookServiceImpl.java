@@ -10,10 +10,12 @@ import com.mlab.assessment.model.request.book.CreateBookDTO;
 import com.mlab.assessment.model.request.book.IssueBookDTO;
 import com.mlab.assessment.model.request.book.UpdateBookDTO;
 import com.mlab.assessment.model.response.book.BookResponseDTO;
+import com.mlab.assessment.model.response.user.UserResponseDTO;
 import com.mlab.assessment.service.BaseService;
 import com.mlab.assessment.service.BookEntityService;
 import com.mlab.assessment.service.BookMetaEntityService;
 import com.mlab.assessment.service.UserEntityService;
+import com.mlab.assessment.service.user.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -34,6 +36,7 @@ public class BookServiceImpl extends BaseService implements BookService {
     private final BookMetaEntityService metaEntityService;
     private final UserEntityService userEntityService;
     private final BookMapper mapper;
+    private final UserMapper userMapper;
 
     @Override
     public List<BookResponseDTO> findAllBooks() {
@@ -94,7 +97,7 @@ public class BookServiceImpl extends BaseService implements BookService {
     }
 
     @Override
-    public List<BookResponseDTO> issueBook(IssueBookDTO dto) {
+    public UserResponseDTO issueBook(IssueBookDTO dto) {
 
         if(CollectionUtils.isEmpty(dto.getBookIds()))
             throw new BadRequestException("validation.constraints.issueBook.Empty.message");
@@ -116,7 +119,8 @@ public class BookServiceImpl extends BaseService implements BookService {
         mapper.fillIssuableEntity(bookEntities, metaEntities, userEntity);
         bookEntityService.save(bookEntities);
         metaEntityService.save(metaEntities);
-        return mapper.mapToBookResponseDTO(metaEntities, userEntity);
+//        return mapper.mapToBookResponseDTO(metaEntities, userEntity);
+        return userMapper.mapToDto(userEntity, metaEntityService.findMetaInBooks(userEntity.getBooks()));
     }
 
     @Override

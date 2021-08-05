@@ -4,6 +4,7 @@ import com.mlab.assessment.entity.BookEntity;
 import com.mlab.assessment.entity.BookMetaEntity;
 import com.mlab.assessment.exception.RecordNotFoundException;
 import com.mlab.assessment.repository.BookRepository;
+import com.mlab.assessment.specs.BookSpecification;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

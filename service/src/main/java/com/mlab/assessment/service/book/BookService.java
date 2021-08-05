@@ -5,6 +5,7 @@ import com.mlab.assessment.model.request.book.IssueBookDTO;
 import com.mlab.assessment.model.request.book.UpdateBookDTO;
 import com.mlab.assessment.model.request.book.CreateBookDTO;
 import com.mlab.assessment.model.response.book.BookResponseDTO;
+import com.mlab.assessment.model.response.user.UserResponseDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface BookService {
     @Transactional(rollbackFor = Exception.class)
     BookResponseDTO updateBook(UpdateBookDTO dto);
     @Transactional(rollbackFor = Exception.class)
-    List<BookResponseDTO> issueBook(IssueBookDTO dto);
+    UserResponseDTO issueBook(IssueBookDTO dto);
     @Transactional(rollbackFor = Exception.class)
     BookResponseDTO deleteBook(long id);
 }

@@ -18,6 +18,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author dipanjal
@@ -84,17 +85,24 @@ public class UserServiceImpl extends BaseService implements UserService {
         UserEntity userEntity = userEntityService.findById(dto.getUserId())
                 .orElseThrow(supplyRecordNotFoundException("validation.constraints.userId.NotFound.message"));
 
-        List<BookEntity> bookEntities = bookEntityService.findBooksByIdIn(dto.getBookIds());
-        if(CollectionUtils.isEmpty(bookEntities))
-            throw new RecordNotFoundException(messageHelper.getLocalMessage(RECORD_NOT_FOUND_MSG_KEY));
+        List<BookEntity> issuedBooks = userEntity
+                .getBooks()
+                .stream()
+                .filter(book -> dto.getBookIds().contains(book.getId()))
+                .collect(Collectors.toList());
 
-        List<BookMetaEntity> metaEntities = metaEntityService.findMetaInBooks(bookEntities);
+        if(CollectionUtils.isEmpty(issuedBooks))
+            throw new RecordNotFoundException(messageHelper.getLocalMessage("validation.constraints.issueBook.Empty.message"));
+
+        List<BookMetaEntity> metaEntities = metaEntityService.findMetaInBooks(issuedBooks);
         if(CollectionUtils.isEmpty(metaEntities))
             throw new RecordNotFoundException(messageHelper.getLocalMessage(RECORD_NOT_FOUND_MSG_KEY));
 
         userEntity.getBooks().removeIf(book -> dto.getBookIds().contains(book.getId()));
-        bookEntities.forEach(book -> book.getUsers().remove(userEntity));
-        metaEntities.forEach(meta -> meta.setNoOfCopy(meta.getNoOfCopy() + 1));
+        issuedBooks.forEach(book -> book.getUsers().remove(userEntity));
+
+        metaEntities.forEach(meta -> meta.setNoOfCopy(meta.getNoOfCopy() + issuedBooks.size()));
+
         userEntityService.save(userEntity);
         metaEntityService.save(metaEntities);
 
