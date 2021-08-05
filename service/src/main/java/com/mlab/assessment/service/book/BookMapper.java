@@ -14,11 +14,13 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.mlab.assessment.utils.DateTimeUtils.toDBDateFormat;
 import static com.mlab.assessment.utils.DateTimeUtils.toAPIDateFormat;
+import static com.mlab.assessment.utils.DateTimeUtils.toDBDateFormat;
 
 /**
  * @author dipanjal
@@ -140,5 +142,22 @@ public class BookMapper {
                 .stream()
                 .map(this::mapToIssuedUserDTO)
                 .collect(Collectors.toList());
+    }
+
+    public List<BookEntity> extractIssuedBooks(UserEntity userEntity, Set<Long> bookIds) {
+        return userEntity
+                .getBooks()
+                .stream()
+                .filter(book -> bookIds.contains(book.getId()))
+                .collect(Collectors.toList());
+    }
+
+    public void fillBookSubmissionEntity(UserEntity userEntity, Set<Long> requestedBookIds, List<BookEntity> issuedBooks, List<BookMetaEntity> metaEntities) {
+
+        Predicate<BookEntity> isBookInRequestedBookList = book -> requestedBookIds.contains(book.getId());
+
+        userEntity.getBooks().removeIf(isBookInRequestedBookList);
+        issuedBooks.forEach(book -> book.getUsers().remove(userEntity));
+        metaEntities.forEach(meta -> meta.setNoOfCopy(meta.getNoOfCopy() + issuedBooks.size()));
     }
 }

@@ -13,7 +13,7 @@ import java.util.Set;
  */
 @Getter
 @Setter
-public class IssueBookDTO {
+public class IssueBookRequestDTO {
     @Min(value = 1, message = "validation.constraints.userId.NotNull.message")
     @JsonProperty("user_id")
     private long userId;

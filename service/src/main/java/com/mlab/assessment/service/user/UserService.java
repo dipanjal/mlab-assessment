@@ -1,7 +1,6 @@
 package com.mlab.assessment.service.user;
 
 import com.mlab.assessment.model.dto.CreateUserDTO;
-import com.mlab.assessment.model.dto.SubmitBookRequestDTO;
 import com.mlab.assessment.model.dto.UpdateUserDTO;
 import com.mlab.assessment.model.response.user.UserResponseDTO;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +23,4 @@ public interface UserService {
     UserResponseDTO updateUser(UpdateUserDTO dto);
     @Transactional
     UserResponseDTO deleteUser(long id);
-    @Transactional
-    UserResponseDTO submitBooks(SubmitBookRequestDTO dto);
 }

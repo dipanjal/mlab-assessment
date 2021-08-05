@@ -6,8 +6,9 @@ import com.mlab.assessment.entity.UserEntity;
 import com.mlab.assessment.exception.BadRequestException;
 import com.mlab.assessment.exception.RecordNotFoundException;
 import com.mlab.assessment.model.dto.BookSearchDTO;
+import com.mlab.assessment.model.dto.SubmitBookRequestDTO;
 import com.mlab.assessment.model.request.book.CreateBookDTO;
-import com.mlab.assessment.model.request.book.IssueBookDTO;
+import com.mlab.assessment.model.request.book.IssueBookRequestDTO;
 import com.mlab.assessment.model.request.book.UpdateBookDTO;
 import com.mlab.assessment.model.response.book.BookResponseDTO;
 import com.mlab.assessment.model.response.user.UserResponseDTO;
@@ -84,10 +85,12 @@ public class BookServiceImpl extends BaseService implements BookService {
 
     @Override
     public BookResponseDTO updateBook(UpdateBookDTO dto) {
-        BookEntity bookEntity = bookEntityService.findById(dto.getId())
+        BookEntity bookEntity = bookEntityService
+                .findById(dto.getId())
                 .orElseThrow(super.supplyRecordNotFoundException(RECORD_NOT_FOUND_MSG_KEY));
 
-        BookMetaEntity metaEntity = metaEntityService.findById(bookEntity.getMetaId())
+        BookMetaEntity metaEntity = metaEntityService
+                .findById(bookEntity.getMetaId())
                 .orElseThrow(super.supplyRecordNotFoundException(RECORD_NOT_FOUND_MSG_KEY));
 
         mapper.fillUpdatableEntity(metaEntity, dto);
@@ -97,7 +100,7 @@ public class BookServiceImpl extends BaseService implements BookService {
     }
 
     @Override
-    public UserResponseDTO issueBook(IssueBookDTO dto) {
+    public UserResponseDTO issueBook(IssueBookRequestDTO dto) {
 
         if(CollectionUtils.isEmpty(dto.getBookIds()))
             throw new BadRequestException("validation.constraints.issueBook.Empty.message");
@@ -105,7 +108,8 @@ public class BookServiceImpl extends BaseService implements BookService {
         if(dto.getBookIds().size() > props.getMaxIssueBook())
             throw new BadRequestException("validation.constraints.issueBook.Invalid.Max.message");
 
-        UserEntity userEntity = userEntityService.findById(dto.getUserId())
+        UserEntity userEntity = userEntityService
+                .findById(dto.getUserId())
                 .orElseThrow(super.supplyRecordNotFoundException("validation.constraints.userId.NotFound.message"));
 
         List<BookEntity> bookEntities = bookEntityService.findBooksByIdIn(dto.getBookIds());
@@ -119,8 +123,36 @@ public class BookServiceImpl extends BaseService implements BookService {
         mapper.fillIssuableEntity(bookEntities, metaEntities, userEntity);
         bookEntityService.save(bookEntities);
         metaEntityService.save(metaEntities);
-//        return mapper.mapToBookResponseDTO(metaEntities, userEntity);
-        return userMapper.mapToDto(userEntity, metaEntityService.findMetaInBooks(userEntity.getBooks()));
+
+        return userMapper.mapToDto(
+                userEntity,
+                metaEntityService.findMetaInBooks(userEntity.getBooks())
+        );
+    }
+
+    @Override
+    public UserResponseDTO submitBooks(SubmitBookRequestDTO dto) {
+        if(CollectionUtils.isEmpty(dto.getBookIds()))
+            throw new BadRequestException(messageHelper.getLocalMessage("api.response.BAD_REQUEST.message"));
+
+        UserEntity userEntity = userEntityService
+                .findById(dto.getUserId())
+                .orElseThrow(supplyRecordNotFoundException("validation.constraints.userId.NotFound.message"));
+
+        List<BookEntity> issuedBooks = mapper.extractIssuedBooks(userEntity, dto.getBookIds());
+        if(CollectionUtils.isEmpty(issuedBooks))
+            throw new RecordNotFoundException(messageHelper.getLocalMessage("validation.constraints.issueBook.Empty.message"));
+
+        List<BookMetaEntity> metaEntities = metaEntityService.findMetaInBooks(issuedBooks);
+        if(CollectionUtils.isEmpty(metaEntities))
+            throw new RecordNotFoundException(messageHelper.getLocalMessage(RECORD_NOT_FOUND_MSG_KEY));
+
+        mapper.fillBookSubmissionEntity(userEntity, dto.getBookIds(), issuedBooks, metaEntities);
+        userEntityService.save(userEntity);
+        metaEntityService.save(metaEntities);
+
+        List<BookMetaEntity> newMetaList = metaEntityService.findMetaInBooks(userEntity.getBooks());
+        return userMapper.mapToDto(userEntity, newMetaList);
     }
 
     @Override

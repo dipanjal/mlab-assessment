@@ -2,7 +2,6 @@ package com.mlab.assessment.controller;
 
 import com.mlab.assessment.model.ApiResponse;
 import com.mlab.assessment.model.dto.CreateUserDTO;
-import com.mlab.assessment.model.dto.SubmitBookRequestDTO;
 import com.mlab.assessment.model.dto.UpdateUserDTO;
 import com.mlab.assessment.model.response.user.UserResponseDTO;
 import com.mlab.assessment.service.user.UserService;
@@ -67,13 +66,5 @@ public class UserController extends BaseController {
                 ResponseBuilder
                         .buildOkResponse(
                                 userService.deleteUser(id)));
-    }
-
-    @PostMapping("/user/submit-book")
-    public ResponseEntity<ApiResponse<UserResponseDTO>> deleteUserById(@RequestBody @Valid SubmitBookRequestDTO dto){
-        return ResponseEntity.ok(
-                ResponseBuilder
-                        .buildOkResponse(
-                                userService.submitBooks(dto)));
     }
 }

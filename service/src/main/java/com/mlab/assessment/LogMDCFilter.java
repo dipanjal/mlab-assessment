@@ -1,8 +1,9 @@
 package com.mlab.assessment;
 
+import com.mlab.assessment.props.AppProperties;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -19,16 +20,16 @@ import java.io.IOException;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class LogMDCFilter extends OncePerRequestFilter {
 
-    @Value("${application.request-id-header}")
-    private String headerName;
+    private final AppProperties properties;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String requestId = request.getHeader(headerName);
-        MDC.put(headerName, requestId);
+        String requestId = request.getHeader(properties.getRequestIdHeader());
+        MDC.put(properties.getRequestIdHeader(), requestId);
         filterChain.doFilter(request, response);
     }
 }

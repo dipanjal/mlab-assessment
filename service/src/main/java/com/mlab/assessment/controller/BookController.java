@@ -2,9 +2,10 @@ package com.mlab.assessment.controller;
 
 import com.mlab.assessment.model.ApiResponse;
 import com.mlab.assessment.model.dto.BookSearchDTO;
-import com.mlab.assessment.model.request.book.IssueBookDTO;
-import com.mlab.assessment.model.request.book.UpdateBookDTO;
+import com.mlab.assessment.model.dto.SubmitBookRequestDTO;
 import com.mlab.assessment.model.request.book.CreateBookDTO;
+import com.mlab.assessment.model.request.book.IssueBookRequestDTO;
+import com.mlab.assessment.model.request.book.UpdateBookDTO;
 import com.mlab.assessment.model.response.book.BookResponseDTO;
 import com.mlab.assessment.model.response.user.UserResponseDTO;
 import com.mlab.assessment.service.book.BookService;
@@ -68,8 +69,15 @@ public class BookController extends BaseController {
                         bookService.updateBook(dto)));
     }
 
+    @DeleteMapping("/book/delete-by-id/{id}")
+    public ResponseEntity<ApiResponse<BookResponseDTO>> deleteBookById(@PathVariable long id){
+        return ResponseEntity.ok(
+                ResponseBuilder.buildOkResponse(
+                        bookService.deleteBook(id)));
+    }
+
     @PostMapping("/book/issue")
-    public ResponseEntity<ApiResponse<UserResponseDTO>> issueBook(@RequestBody @Valid IssueBookDTO dto,
+    public ResponseEntity<ApiResponse<UserResponseDTO>> issueBook(@RequestBody @Valid IssueBookRequestDTO dto,
                                                                         BindingResult result){
         super.throwIfHasError(result);
         return ResponseEntity.ok(
@@ -77,11 +85,12 @@ public class BookController extends BaseController {
                         bookService.issueBook(dto)));
     }
 
-    @DeleteMapping("/book/delete-by-id/{id}")
-    public ResponseEntity<ApiResponse<BookResponseDTO>> deleteBookById(@PathVariable long id){
+    @PostMapping("/book/submit")
+    public ResponseEntity<ApiResponse<UserResponseDTO>> deleteUserById(@RequestBody @Valid SubmitBookRequestDTO dto){
         return ResponseEntity.ok(
-                ResponseBuilder.buildOkResponse(
-                        bookService.deleteBook(id)));
+                ResponseBuilder
+                        .buildOkResponse(
+                                bookService.submitBooks(dto)));
     }
 
 }
