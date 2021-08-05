@@ -99,7 +99,7 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
-					<skip>true</skip>
+<!--					<skip>true</skip>-->
 				</configuration>
 			</plugin>
 			<plugin>

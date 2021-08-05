@@ -1,0 +1,47 @@
+version: '3.9'
+services:
+
+  mlab-mysql-env:
+    restart: always
+    image: woahbase/alpine-mysql:latest
+    container_name: mlab_mysql_db_container
+    environment:
+      MYSQL_USER: root
+      MYSQL_USER_PWD: toor
+      MYSQL_USER_DB: mlab_db
+    ports:
+      - 0.0.0.0:3306:3306
+    networks:
+      - mlab-backend
+    volumes:
+      - ~/data/mlab-db:/var/lib/mysql/backups
+
+  mlab-service:
+    depends_on:
+      - mlab-mysql-env
+    build:
+      context: .
+    image: mlab-assessment:latest
+    container_name: mlab-assessment-app
+    ports:
+      - 0.0.0.0:8080:8080
+    environment:
+      ACTIVE_PROFILE: dev
+      DB_USERNAME: root
+      DB_PASSWORD: toor
+      DB_URL: jdbc:mysql://mlab-mysql-env:3306/mlab_db
+    volumes:
+      - ~/data/mlab:/tmp
+    networks:
+      - mlab-backend
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2000M
+      restart_policy:
+        condition: on-failure
+
+networks:
+  mlab-backend:
+    driver: bridge

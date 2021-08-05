@@ -29,8 +29,4 @@ public class BookEntity extends BaseEntity {
     public void addUser(UserEntity userEntity){
         users.add(userEntity);
     }
-
-    public void remove(UserEntity userEntity){
-        users.remove(userEntity);
-    }
 }

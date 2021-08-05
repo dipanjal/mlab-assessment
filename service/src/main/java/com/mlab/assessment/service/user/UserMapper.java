@@ -7,7 +7,6 @@ import com.mlab.assessment.model.dto.CreateUserDTO;
 import com.mlab.assessment.model.dto.UpdateUserDTO;
 import com.mlab.assessment.model.response.user.IssuedBook;
 import com.mlab.assessment.model.response.user.UserResponseDTO;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,7 +21,6 @@ import static com.mlab.assessment.utils.DateTimeUtils.toAPIDateFormat;
  * @since 0.0.1
  */
 @Component
-@RequiredArgsConstructor
 public class UserMapper {
 
     private Map<Long, BookMetaEntity> getAsMap(List<BookMetaEntity> metaEntityList){
