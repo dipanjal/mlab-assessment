@@ -3,8 +3,8 @@ package com.mlab.assessment;
 import com.mlab.assessment.entity.UserEntity;
 import com.mlab.assessment.model.request.book.CreateBookDTO;
 import com.mlab.assessment.repository.BookMetaRepository;
-import com.mlab.assessment.repository.BookRepository;
-import com.mlab.assessment.repository.UserRepository;
+import com.mlab.assessment.service.BookEntityService;
+import com.mlab.assessment.service.UserEntityService;
 import com.mlab.assessment.service.book.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,26 +24,26 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ApplicationSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
-    private final UserRepository userRepository;
-    private final BookRepository bookRepository;
+    private final UserEntityService userEntityService;
+    private final BookEntityService bookEntityService;
     private final BookMetaRepository bookMetaRepository;
 
     private final BookService bookService;
 
     private void populateUsers(){
 
-        if(CollectionUtils.isEmpty(userRepository.findAll())){
+        if(CollectionUtils.isEmpty(userEntityService.findAll())){
             List<UserEntity> userEntities = List.of(
                     new UserEntity("jhon_d","Jhon Doe", "jhon@example.com"),
                     new UserEntity("mariya_tk","Mariya Takeuchi","mariya@example.com")
             );
-            userRepository.saveAll(userEntities);
+            userEntityService.save(userEntities);
         }
     }
 
     private void populateBooks(){
 
-        if(CollectionUtils.isEmpty(bookRepository.findAll())){
+        if(CollectionUtils.isEmpty(bookEntityService.findAll())){
             bookMetaRepository.deleteAll();
 
             bookService.createBook(

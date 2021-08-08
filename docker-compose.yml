@@ -1,6 +1,5 @@
 version: '3.9'
 services:
-
   mlab-mysql-env:
     restart: always
     image: woahbase/alpine-mysql:latest

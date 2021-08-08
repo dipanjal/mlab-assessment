@@ -72,6 +72,6 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        show_sql: true
+        show_sql: false
         format_sql: true
         enable_lazy_load_no_trans: true

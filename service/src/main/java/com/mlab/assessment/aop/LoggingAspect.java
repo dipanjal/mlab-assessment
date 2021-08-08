@@ -2,7 +2,7 @@ package com.mlab.assessment.aop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -11,7 +11,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -26,16 +25,10 @@ import static java.lang.String.format;
 @Aspect
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class LoggingAspect {
 
-    private ObjectMapper mapper;
-
-    @PostConstruct
-    public void init(){
-        mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.FLUSH_AFTER_WRITE_VALUE, true);
-        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-    }
+    private final ObjectMapper jacksonMapper;
 
     @Pointcut("execution(public * com.mlab.assessment.service..*(..))")
     public void serviceLoggingPointcut() {
@@ -70,7 +63,7 @@ public class LoggingAspect {
     private Consumer<Object> argsAppender(StringBuilder builder, AtomicInteger count){
         return o -> {
             try {
-                String json = mapper
+                String json = jacksonMapper
                         .writerWithDefaultPrettyPrinter()
                         .writeValueAsString(o);
                 builder.append(
