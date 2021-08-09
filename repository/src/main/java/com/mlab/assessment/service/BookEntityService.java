@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
  * @since 0.0.1
  */
 @Service
-@EnableLogging
 public class BookEntityService extends BaseCRUDService<BookEntity, BookRepository> {
     public BookEntityService(BookRepository repository) {
         super(repository);

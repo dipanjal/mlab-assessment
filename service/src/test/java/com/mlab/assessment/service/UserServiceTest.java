@@ -90,12 +90,11 @@ public class UserServiceTest {
 
     @Test
     @Order(6)
-    @Disabled
     public void submitBookTest() {
         UserResponseDTO userResponse = userService.findUserByUsername(TEST_USERNAME);
         SubmitBookRequestDTO dto = new SubmitBookRequestDTO();
         dto.setUserId(userResponse.getId());
-        dto.setBookIds(Set.of(1L, 2L));
+        dto.setBookIds(Set.of(1L));
         Assertions.assertNotNull(bookService.submitBooks(dto));
     }
 
