@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class EmailDTO {
+public class EmailResponseDTO {
     private String email;
     private String body;
 }

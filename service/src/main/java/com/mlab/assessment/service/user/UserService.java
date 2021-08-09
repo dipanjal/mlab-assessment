@@ -19,6 +19,8 @@ public interface UserService {
     List<UserResponseDTO> findAllUser();
     @Transactional(readOnly = true)
     UserResponseDTO findUserById(long id);
+    @Transactional(readOnly = true)
+    UserResponseDTO findUserByUsername(String userName);
     @Transactional
     UserResponseDTO createUser(CreateUserDTO dto);
     @Transactional

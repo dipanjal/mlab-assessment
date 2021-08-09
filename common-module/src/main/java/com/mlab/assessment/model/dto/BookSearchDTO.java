@@ -1,7 +1,6 @@
 package com.mlab.assessment.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +10,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Builder
 public class BookSearchDTO {
     @JsonProperty("book_name")
     private String bookName;

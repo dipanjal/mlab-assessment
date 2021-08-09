@@ -160,4 +160,10 @@ public class BookMapper {
         issuedBooks.forEach(book -> book.getUsers().remove(userEntity));
         metaEntities.forEach(meta -> meta.setNoOfCopy(meta.getNoOfCopy() + issuedBooks.size()));
     }
+
+    public void fillBookSubmissionEntity(UserEntity userEntity, List<BookEntity> issuedBooks, List<BookMetaEntity> metaEntities) {
+        userEntity.getBooks().removeAll(issuedBooks);
+        issuedBooks.forEach(book -> book.getUsers().remove(userEntity));
+        metaEntities.forEach(meta -> meta.setNoOfCopy(meta.getNoOfCopy() + issuedBooks.size()));
+    }
 }

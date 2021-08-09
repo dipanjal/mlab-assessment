@@ -1,5 +1,6 @@
 package com.mlab.assessment.service;
 
+import com.mlab.assessment.annotation.EnableLogging;
 import com.mlab.assessment.entity.BookEntity;
 import com.mlab.assessment.entity.BookMetaEntity;
 import com.mlab.assessment.exception.RecordNotFoundException;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
  * @since 0.0.1
  */
 @Service
+@EnableLogging
 public class BookEntityService extends BaseCRUDService<BookEntity, BookRepository> {
     public BookEntityService(BookRepository repository) {
         super(repository);

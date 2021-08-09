@@ -32,6 +32,6 @@ public interface BookService {
     UserResponseDTO issueBook(IssueBookRequestDTO dto);
     @Transactional(rollbackFor = Exception.class)
     UserResponseDTO submitBooks(SubmitBookRequestDTO dto);
-
-
+    @Transactional(rollbackFor = Exception.class)
+    UserResponseDTO submitAllBooks(long userId);
 }

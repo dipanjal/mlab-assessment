@@ -92,7 +92,6 @@ public class UserMapper {
     }
 
     public void fillUpdatableEntity(UserEntity entity, UpdateUserDTO dto){
-        entity.setUsername(dto.getUserName());
         entity.setFullName(dto.getFullName());
         entity.setEmail(dto.getEmail());
     }

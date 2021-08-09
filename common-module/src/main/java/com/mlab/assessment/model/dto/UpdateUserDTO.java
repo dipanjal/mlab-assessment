@@ -20,9 +20,6 @@ public class UpdateUserDTO {
     @NotBlank(message = "validation.constraints.user.fullName.NotNull.message")
     @JsonProperty("full_name")
     private String fullName;
-    @NotBlank(message = "validation.constraints.username.NotNull.message")
-    @JsonProperty("user_name")
-    private String userName;
 
     @NotBlank(message = "validation.constraints.user.email.empty.message")
     @Email(message = "validation.constraints.user.email.Invalid.message")
