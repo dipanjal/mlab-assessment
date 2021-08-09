@@ -1,7 +1,9 @@
 package com.mlab.assessment.model.request.book;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Min;
@@ -14,9 +16,9 @@ import javax.validation.constraints.Pattern;
  */
 @Getter
 @Setter
-public class BookDTO {
-    @Min(value = 1, message = "Book ID is required")
-    private long id;
+@AllArgsConstructor
+@NoArgsConstructor
+public class CreateBookRequest {
     @NotBlank(message = "Book name can not be empty")
     private String name;
     @JsonProperty("author_name")

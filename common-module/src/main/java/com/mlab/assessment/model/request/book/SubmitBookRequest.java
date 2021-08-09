@@ -1,4 +1,4 @@
-package com.mlab.assessment.model.dto;
+package com.mlab.assessment.model.request.book;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import java.util.Set;
  */
 @Getter
 @Setter
-public class SubmitBookRequestDTO {
+public class SubmitBookRequest {
     @Min(value = 1, message = "validation.constraints.userId.NotNull.message")
     @JsonProperty("user_id")
     private long userId;

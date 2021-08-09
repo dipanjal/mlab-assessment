@@ -1,9 +1,8 @@
 package com.mlab.assessment.service.user;
 
-import com.mlab.assessment.annotation.EnableLogging;
-import com.mlab.assessment.model.dto.CreateUserDTO;
-import com.mlab.assessment.model.dto.UpdateUserDTO;
-import com.mlab.assessment.model.response.user.UserResponseDTO;
+import com.mlab.assessment.model.request.user.CreateUserRequest;
+import com.mlab.assessment.model.request.user.UpdateUserRequest;
+import com.mlab.assessment.model.response.user.UserResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -16,15 +15,15 @@ import java.util.List;
 public interface UserService {
 
     @Transactional(readOnly = true)
-    List<UserResponseDTO> findAllUser();
+    List<UserResponse> findAllUser();
     @Transactional(readOnly = true)
-    UserResponseDTO findUserById(long id);
+    UserResponse findUserById(long id);
     @Transactional(readOnly = true)
-    UserResponseDTO findUserByUsername(String userName);
+    UserResponse findUserByUsername(String userName);
     @Transactional
-    UserResponseDTO createUser(CreateUserDTO dto);
+    UserResponse createUser(CreateUserRequest dto);
     @Transactional
-    UserResponseDTO updateUser(UpdateUserDTO dto);
+    UserResponse updateUser(UpdateUserRequest dto);
     @Transactional
-    UserResponseDTO deleteUser(long id);
+    UserResponse deleteUser(long id);
 }

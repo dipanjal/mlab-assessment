@@ -1,11 +1,11 @@
 package com.mlab.assessment.service;
 
 import com.mlab.assessment.exception.RecordNotFoundException;
-import com.mlab.assessment.model.dto.CreateUserDTO;
-import com.mlab.assessment.model.dto.SubmitBookRequestDTO;
-import com.mlab.assessment.model.dto.UpdateUserDTO;
-import com.mlab.assessment.model.request.book.IssueBookRequestDTO;
-import com.mlab.assessment.model.response.user.UserResponseDTO;
+import com.mlab.assessment.model.request.user.CreateUserRequest;
+import com.mlab.assessment.model.request.book.SubmitBookRequest;
+import com.mlab.assessment.model.request.user.UpdateUserRequest;
+import com.mlab.assessment.model.request.book.IssueBookRequest;
+import com.mlab.assessment.model.response.user.UserResponse;
 import com.mlab.assessment.service.book.BookService;
 import com.mlab.assessment.service.user.UserService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -52,7 +52,7 @@ public class UserServiceTest {
     @Test
     @Order(3)
     public void createUserTest(){
-        CreateUserDTO dto = new CreateUserDTO();
+        CreateUserRequest dto = new CreateUserRequest();
         dto.setUserName(TEST_USERNAME);
         dto.setFullName("Robert C. Martin");
         dto.setEmail("robert.c.mertin@mlab.com");
@@ -64,10 +64,10 @@ public class UserServiceTest {
     @Test
     @Order(4)
     public void updateUserTest(){
-        UserResponseDTO userResponse = userService.findUserByUsername(TEST_USERNAME);
+        UserResponse userResponse = userService.findUserByUsername(TEST_USERNAME);
         Assertions.assertNotNull(userResponse);
 
-        UpdateUserDTO dto = new UpdateUserDTO();
+        UpdateUserRequest dto = new UpdateUserRequest();
         dto.setId(userResponse.getId());
         dto.setFullName(userResponse.getName());
         dto.setEmail("robert.c.martin@mlab.com");
@@ -79,8 +79,8 @@ public class UserServiceTest {
     @Test
     @Order(5)
     public void issueBookTest(){
-        UserResponseDTO userResponse = userService.findUserByUsername(TEST_USERNAME);
-        IssueBookRequestDTO dto = new IssueBookRequestDTO();
+        UserResponse userResponse = userService.findUserByUsername(TEST_USERNAME);
+        IssueBookRequest dto = new IssueBookRequest();
         dto.setUserId(userResponse.getId());
         dto.setBookIds(Set.of(1L, 2L));
         Assertions.assertNotNull(
@@ -91,8 +91,8 @@ public class UserServiceTest {
     @Test
     @Order(6)
     public void submitBookTest() {
-        UserResponseDTO userResponse = userService.findUserByUsername(TEST_USERNAME);
-        SubmitBookRequestDTO dto = new SubmitBookRequestDTO();
+        UserResponse userResponse = userService.findUserByUsername(TEST_USERNAME);
+        SubmitBookRequest dto = new SubmitBookRequest();
         dto.setUserId(userResponse.getId());
         dto.setBookIds(Set.of(1L));
         Assertions.assertNotNull(bookService.submitBooks(dto));
@@ -101,7 +101,7 @@ public class UserServiceTest {
     @Test
     @Order(7)
     public void deleteUserTest(){
-        UserResponseDTO userResponse = userService.findUserByUsername(TEST_USERNAME);
+        UserResponse userResponse = userService.findUserByUsername(TEST_USERNAME);
         try{
             Assertions.assertNotNull(
                     userService.deleteUser(userResponse.getId())

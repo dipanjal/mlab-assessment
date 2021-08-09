@@ -5,9 +5,9 @@ import com.mlab.assessment.entity.BookMetaEntity;
 import com.mlab.assessment.entity.UserEntity;
 import com.mlab.assessment.exception.NotUniqueException;
 import com.mlab.assessment.exception.RecordNotFoundException;
-import com.mlab.assessment.model.dto.CreateUserDTO;
-import com.mlab.assessment.model.dto.UpdateUserDTO;
-import com.mlab.assessment.model.response.user.UserResponseDTO;
+import com.mlab.assessment.model.request.user.CreateUserRequest;
+import com.mlab.assessment.model.request.user.UpdateUserRequest;
+import com.mlab.assessment.model.response.user.UserResponse;
 import com.mlab.assessment.service.BaseService;
 import com.mlab.assessment.service.BookMetaEntityService;
 import com.mlab.assessment.service.UserEntityService;
@@ -34,14 +34,14 @@ public class UserServiceImpl extends BaseService implements UserService {
     private final UserMapper mapper;
 
     @Override
-    public List<UserResponseDTO> findAllUser() {
+    public List<UserResponse> findAllUser() {
         List<UserEntity> userEntities = userEntityService.findAll();
         List<BookMetaEntity> metaEntities = metaEntityService.findAll();
         return mapper.mapToDto(userEntities, metaEntities);
     }
 
     @Override
-    public UserResponseDTO findUserById(long id) {
+    public UserResponse findUserById(long id) {
         UserEntity userEntity = userEntityService
                 .findById(id)
                 .orElseThrow(supplyRecordNotFoundException("validation.constraints.userId.NotFound.message"));
@@ -52,7 +52,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
-    public UserResponseDTO findUserByUsername(String userName) {
+    public UserResponse findUserByUsername(String userName) {
         UserEntity userEntity = userEntityService
                 .findUserByUsername(userName)
                 .orElseThrow(supplyRecordNotFoundException("validation.constraints.username.NotFound.message"));
@@ -62,7 +62,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
-    public UserResponseDTO createUser(CreateUserDTO dto) {
+    public UserResponse createUser(CreateUserRequest dto) {
         userEntityService.findUserByUsername(dto.getUserName())
                 .ifPresent(u -> {
                     throw new NotUniqueException(
@@ -75,7 +75,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
-    public UserResponseDTO updateUser(UpdateUserDTO dto) {
+    public UserResponse updateUser(UpdateUserRequest dto) {
         UserEntity updatableEntity = userEntityService
                 .findById(dto.getId())
                 .orElseThrow(supplyRecordNotFoundException("validation.constraints.userId.NotFound.message"));
@@ -86,7 +86,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
-    public UserResponseDTO deleteUser(long id) {
+    public UserResponse deleteUser(long id) {
         bookService.submitAllBooks(id);
         try{
             return mapper.mapToDto(userEntityService.delete(id));
@@ -95,7 +95,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         }
     }
 
-    private UserResponseDTO getUserResponseDTO(UserEntity entity) {
+    private UserResponse getUserResponseDTO(UserEntity entity) {
         if(CollectionUtils.isEmpty(entity.getBooks()))
             return mapper.mapToDto(entity);
 

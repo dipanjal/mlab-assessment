@@ -1,4 +1,4 @@
-package com.mlab.assessment.model.dto;
+package com.mlab.assessment.model.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class EmailResponseDTO {
+public class EmailResponse {
     private String email;
     private String body;
 }

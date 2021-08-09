@@ -1,10 +1,9 @@
 package com.mlab.assessment.service;
 
-import com.mlab.assessment.model.dto.BookSearchDTO;
+import com.mlab.assessment.model.request.user.BookSearchRequest;
 import com.mlab.assessment.service.book.BookService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,7 +37,7 @@ public class BookServiceTest {
 
     @Test
     public void searchBookTest(){
-        BookSearchDTO dto = new BookSearchDTO();
+        BookSearchRequest dto = new BookSearchRequest();
         dto.setBookName("Java");
         dto.setAuthorName("Rayan");
         Assertions.assertTrue(

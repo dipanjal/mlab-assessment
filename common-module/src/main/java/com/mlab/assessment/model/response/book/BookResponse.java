@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class BookResponseDTO {
+public class BookResponse {
     private long id;
     private String name;
 

@@ -3,9 +3,9 @@ package com.mlab.assessment.service.book;
 import com.mlab.assessment.entity.BookEntity;
 import com.mlab.assessment.entity.BookMetaEntity;
 import com.mlab.assessment.entity.UserEntity;
-import com.mlab.assessment.model.request.book.CreateBookDTO;
-import com.mlab.assessment.model.request.book.UpdateBookDTO;
-import com.mlab.assessment.model.response.book.BookResponseDTO;
+import com.mlab.assessment.model.request.book.CreateBookRequest;
+import com.mlab.assessment.model.request.book.UpdateBookRequest;
+import com.mlab.assessment.model.response.book.BookResponse;
 import com.mlab.assessment.model.response.book.IssuedUser;
 import com.mlab.assessment.utils.DateTimeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -30,7 +31,7 @@ import static com.mlab.assessment.utils.DateTimeUtils.toDBDateFormat;
 @Slf4j
 public class BookMapper {
 
-    public BookMetaEntity mapToNewBookMetaEntity(CreateBookDTO dto){
+    public BookMetaEntity mapToNewBookMetaEntity(CreateBookRequest dto){
         return new BookMetaEntity(
                 dto.getName(),
                 dto.getAuthorName(),
@@ -41,7 +42,7 @@ public class BookMapper {
         );
     }
 
-    public void fillUpdatableEntity(BookMetaEntity entityToUpdate, UpdateBookDTO dto){
+    public void fillUpdatableEntity(BookMetaEntity entityToUpdate, UpdateBookRequest dto){
         entityToUpdate.setAuthorName(dto.getAuthorName());
         entityToUpdate.setDescription(dto.getDescription());
         entityToUpdate.setNoOfCopy(dto.getNoOfCopy());
@@ -53,7 +54,7 @@ public class BookMapper {
 
         Map<Long, BookMetaEntity> bookMetaMap = this.getAsMetaMap(metaEntityList);
 
-        entityList.forEach(book -> {
+        Consumer<BookEntity> issueBookMappingConsumer = book -> {
             BookMetaEntity metaEntity = bookMetaMap.get(book.getMetaId());
             if(metaEntity.getNoOfCopy() > 0){
                 metaEntity.setNoOfCopy(metaEntity.getNoOfCopy() - 1);
@@ -62,12 +63,14 @@ public class BookMapper {
             }else{
                 log.info("Can't issue {} ", metaEntity.getName());
             }
-        });
+        };
+
+        entityList.forEach(issueBookMappingConsumer);
     }
 
-    public BookResponseDTO mapToBookResponseDTO(BookMetaEntity metaEntity, IssuedUser issuedUser){
+    public BookResponse mapToBookResponseDTO(BookMetaEntity metaEntity, IssuedUser issuedUser){
 
-        return BookResponseDTO.builder()
+        return BookResponse.builder()
                 .id(metaEntity.getBookId())
                 .name(metaEntity.getName())
                 .authorName(metaEntity.getAuthorName())
@@ -78,7 +81,7 @@ public class BookMapper {
                 .build();
     }
 
-    public BookResponseDTO mapToBookResponseDTO(BookMetaEntity metaEntity, UserEntity user){
+    public BookResponse mapToBookResponseDTO(BookMetaEntity metaEntity, UserEntity user){
 
         IssuedUser issuedUser = IssuedUser.builder()
                 .id(user.getId())
@@ -88,7 +91,7 @@ public class BookMapper {
         return this.mapToBookResponseDTO(metaEntity, issuedUser);
     }
 
-    public List<BookResponseDTO> mapToBookResponseDTO(List<BookMetaEntity> metaEntityList, UserEntity user){
+    public List<BookResponse> mapToBookResponseDTO(List<BookMetaEntity> metaEntityList, UserEntity user){
         return metaEntityList
                 .stream()
                 .map(e -> mapToBookResponseDTO(e, user))
@@ -96,8 +99,8 @@ public class BookMapper {
     }
 
 
-    public BookResponseDTO mapToBookResponseDTO(BookEntity bookEntity, BookMetaEntity metaEntity){
-        return BookResponseDTO
+    public BookResponse mapToBookResponseDTO(BookEntity bookEntity, BookMetaEntity metaEntity){
+        return BookResponse
                 .builder()
                 .id(bookEntity.getId())
                 .name(metaEntity.getName())
@@ -109,16 +112,20 @@ public class BookMapper {
                 .build();
     }
 
-    public List<BookResponseDTO> mapToBookResponseDTO(List<BookEntity> bookEntities,
-                                                      List<BookMetaEntity> bookMetaEntities){
+    public List<BookResponse> mapToBookResponseDTO(List<BookEntity> bookEntities,
+                                                   List<BookMetaEntity> bookMetaEntities){
 
         Map<Long, BookMetaEntity> metaMap = this.getAsMetaMap(bookMetaEntities);
 
+        Function<BookEntity, BookResponse> bookResponseMapper =
+                book -> mapToBookResponseDTO(
+                        book,
+                        metaMap.get(book.getMetaId())
+                );
+
         return bookEntities
                 .stream()
-                .map(book ->
-                        mapToBookResponseDTO(
-                                book, metaMap.get(book.getMetaId())))
+                .map(bookResponseMapper)
                 .collect(Collectors.toList());
     }
 

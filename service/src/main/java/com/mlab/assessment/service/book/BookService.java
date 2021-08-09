@@ -1,12 +1,12 @@
 package com.mlab.assessment.service.book;
 
-import com.mlab.assessment.model.dto.BookSearchDTO;
-import com.mlab.assessment.model.dto.SubmitBookRequestDTO;
-import com.mlab.assessment.model.request.book.CreateBookDTO;
-import com.mlab.assessment.model.request.book.IssueBookRequestDTO;
-import com.mlab.assessment.model.request.book.UpdateBookDTO;
-import com.mlab.assessment.model.response.book.BookResponseDTO;
-import com.mlab.assessment.model.response.user.UserResponseDTO;
+import com.mlab.assessment.model.request.user.BookSearchRequest;
+import com.mlab.assessment.model.request.book.SubmitBookRequest;
+import com.mlab.assessment.model.request.book.CreateBookRequest;
+import com.mlab.assessment.model.request.book.IssueBookRequest;
+import com.mlab.assessment.model.request.book.UpdateBookRequest;
+import com.mlab.assessment.model.response.book.BookResponse;
+import com.mlab.assessment.model.response.user.UserResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -17,21 +17,21 @@ import java.util.List;
  */
 public interface BookService {
 
-    List<BookResponseDTO> findAllBooks();
-    BookResponseDTO findBookById(long id);
-    List<BookResponseDTO> searchBook(BookSearchDTO dto);
+    List<BookResponse> findAllBooks();
+    BookResponse findBookById(long id);
+    List<BookResponse> searchBook(BookSearchRequest dto);
 
     @Transactional(rollbackFor = Exception.class)
-    BookResponseDTO createBook(CreateBookDTO dto);
+    BookResponse createBook(CreateBookRequest dto);
     @Transactional(rollbackFor = Exception.class)
-    BookResponseDTO updateBook(UpdateBookDTO dto);
+    BookResponse updateBook(UpdateBookRequest dto);
     @Transactional(rollbackFor = Exception.class)
-    BookResponseDTO deleteBook(long id);
+    BookResponse deleteBook(long id);
 
     @Transactional(rollbackFor = Exception.class)
-    UserResponseDTO issueBook(IssueBookRequestDTO dto);
+    UserResponse issueBook(IssueBookRequest dto);
     @Transactional(rollbackFor = Exception.class)
-    UserResponseDTO submitBooks(SubmitBookRequestDTO dto);
+    UserResponse submitBooks(SubmitBookRequest dto);
     @Transactional(rollbackFor = Exception.class)
-    UserResponseDTO submitAllBooks(long userId);
+    UserResponse submitAllBooks(long userId);
 }

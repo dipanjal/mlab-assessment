@@ -3,10 +3,10 @@ package com.mlab.assessment.service.user;
 import com.mlab.assessment.entity.BookEntity;
 import com.mlab.assessment.entity.BookMetaEntity;
 import com.mlab.assessment.entity.UserEntity;
-import com.mlab.assessment.model.dto.CreateUserDTO;
-import com.mlab.assessment.model.dto.UpdateUserDTO;
+import com.mlab.assessment.model.request.user.CreateUserRequest;
+import com.mlab.assessment.model.request.user.UpdateUserRequest;
 import com.mlab.assessment.model.response.user.IssuedBook;
-import com.mlab.assessment.model.response.user.UserResponseDTO;
+import com.mlab.assessment.model.response.user.UserResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -29,8 +29,8 @@ public class UserMapper {
                 .collect(Collectors.toMap(BookMetaEntity::getId, Function.identity()));
     }
 
-    public UserResponseDTO mapToDto(UserEntity entity) {
-        return UserResponseDTO
+    public UserResponse mapToDto(UserEntity entity) {
+        return UserResponse
                 .builder()
                 .id(entity.getId())
                 .name(entity.getFullName())
@@ -39,9 +39,9 @@ public class UserMapper {
                 .build();
     }
 
-    public UserResponseDTO mapToDto(UserEntity entity, List<BookMetaEntity> metaEntity){
+    public UserResponse mapToDto(UserEntity entity, List<BookMetaEntity> metaEntity){
         Map<Long, BookMetaEntity> metaMap = this.getAsMap(metaEntity);
-        return UserResponseDTO
+        return UserResponse
                 .builder()
                 .id(entity.getId())
                 .name(entity.getFullName())
@@ -51,13 +51,13 @@ public class UserMapper {
                 .build();
     }
 
-    public List<UserResponseDTO> mapToDto(List<UserEntity> entityList, List<BookMetaEntity> metaEntityList){
+    public List<UserResponse> mapToDto(List<UserEntity> entityList, List<BookMetaEntity> metaEntityList){
 
         Map<Long, BookMetaEntity> metaMap = this.getAsMap(metaEntityList);
 
         return entityList
                 .stream()
-                .map(user -> UserResponseDTO.builder()
+                .map(user -> UserResponse.builder()
                         .id(user.getId())
                         .name(user.getFullName())
                         .userName(user.getUsername())
@@ -87,11 +87,11 @@ public class UserMapper {
     }
 
     /** ENTITY MAPPING */
-    public UserEntity mapToNewUserEntity(CreateUserDTO dto){
+    public UserEntity mapToNewUserEntity(CreateUserRequest dto){
         return new UserEntity(dto.getUserName(), dto.getFullName(), dto.getEmail());
     }
 
-    public void fillUpdatableEntity(UserEntity entity, UpdateUserDTO dto){
+    public void fillUpdatableEntity(UserEntity entity, UpdateUserRequest dto){
         entity.setFullName(dto.getFullName());
         entity.setEmail(dto.getEmail());
     }

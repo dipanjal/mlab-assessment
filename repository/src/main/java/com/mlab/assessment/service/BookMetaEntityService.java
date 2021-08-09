@@ -2,7 +2,7 @@ package com.mlab.assessment.service;
 
 import com.mlab.assessment.entity.BookEntity;
 import com.mlab.assessment.entity.BookMetaEntity;
-import com.mlab.assessment.model.dto.BookSearchDTO;
+import com.mlab.assessment.model.request.user.BookSearchRequest;
 import com.mlab.assessment.repository.BookMetaRepository;
 import com.mlab.assessment.specs.BookMetaSpecification;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class BookMetaEntityService extends BaseCRUDService<BookMetaEntity, BookM
         super(repository);
     }
 
-    public List<BookMetaEntity> searchBook(BookSearchDTO searchDTO){
+    public List<BookMetaEntity> searchBook(BookSearchRequest searchDTO){
         return repository.findAll(
                 BookMetaSpecification.getSearchSpecification(searchDTO));
     }

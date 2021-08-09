@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class UserResponseDTO {
+public class UserResponse {
     private long id;
     private String name;
     @JsonProperty("user_name")

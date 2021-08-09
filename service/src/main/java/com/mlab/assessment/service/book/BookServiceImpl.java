@@ -6,14 +6,14 @@ import com.mlab.assessment.entity.BookMetaEntity;
 import com.mlab.assessment.entity.UserEntity;
 import com.mlab.assessment.exception.BadRequestException;
 import com.mlab.assessment.exception.RecordNotFoundException;
-import com.mlab.assessment.model.dto.BookSearchDTO;
-import com.mlab.assessment.model.dto.EmailResponseDTO;
-import com.mlab.assessment.model.dto.SubmitBookRequestDTO;
-import com.mlab.assessment.model.request.book.CreateBookDTO;
-import com.mlab.assessment.model.request.book.IssueBookRequestDTO;
-import com.mlab.assessment.model.request.book.UpdateBookDTO;
-import com.mlab.assessment.model.response.book.BookResponseDTO;
-import com.mlab.assessment.model.response.user.UserResponseDTO;
+import com.mlab.assessment.model.request.user.BookSearchRequest;
+import com.mlab.assessment.model.response.EmailResponse;
+import com.mlab.assessment.model.request.book.SubmitBookRequest;
+import com.mlab.assessment.model.request.book.CreateBookRequest;
+import com.mlab.assessment.model.request.book.IssueBookRequest;
+import com.mlab.assessment.model.request.book.UpdateBookRequest;
+import com.mlab.assessment.model.response.book.BookResponse;
+import com.mlab.assessment.model.response.user.UserResponse;
 import com.mlab.assessment.service.BaseService;
 import com.mlab.assessment.service.BookEntityService;
 import com.mlab.assessment.service.BookMetaEntityService;
@@ -47,7 +47,7 @@ public class BookServiceImpl extends BaseService implements BookService {
     private final UserMapper userMapper;
 
     @Override
-    public List<BookResponseDTO> findAllBooks() {
+    public List<BookResponse> findAllBooks() {
         List<BookEntity> books = bookEntityService.findAll();
         if(CollectionUtils.isEmpty(books))
             throw new RecordNotFoundException(messageHelper.getLocalMessage(RECORD_NOT_FOUND_MSG_KEY));
@@ -60,7 +60,7 @@ public class BookServiceImpl extends BaseService implements BookService {
     }
 
     @Override
-    public BookResponseDTO findBookById(long id) {
+    public BookResponse findBookById(long id) {
         BookEntity book = bookEntityService
                 .findById(id)
                 .orElseThrow(super.supplyRecordNotFoundException(RECORD_NOT_FOUND_MSG_KEY));
@@ -73,7 +73,7 @@ public class BookServiceImpl extends BaseService implements BookService {
     }
 
     @Override
-    public List<BookResponseDTO> searchBook(BookSearchDTO dto) {
+    public List<BookResponse> searchBook(BookSearchRequest dto) {
         List<BookMetaEntity> metaEntities = metaEntityService.searchBook(dto);
         if(CollectionUtils.isEmpty(metaEntities))
             throw new RecordNotFoundException(messageHelper.getLocalMessage(RECORD_NOT_FOUND_MSG_KEY));
@@ -83,7 +83,7 @@ public class BookServiceImpl extends BaseService implements BookService {
     }
 
     @Override
-    public BookResponseDTO createBook(CreateBookDTO dto) {
+    public BookResponse createBook(CreateBookRequest dto) {
         BookEntity bookEntity = new BookEntity();
         BookMetaEntity metaEntity = mapper.mapToNewBookMetaEntity(dto);
         this.saveBook(bookEntity, metaEntity);
@@ -91,7 +91,7 @@ public class BookServiceImpl extends BaseService implements BookService {
     }
 
     @Override
-    public BookResponseDTO updateBook(UpdateBookDTO dto) {
+    public BookResponse updateBook(UpdateBookRequest dto) {
         BookEntity bookEntity = bookEntityService
                 .findById(dto.getId())
                 .orElseThrow(super.supplyRecordNotFoundException(RECORD_NOT_FOUND_MSG_KEY));
@@ -107,7 +107,7 @@ public class BookServiceImpl extends BaseService implements BookService {
     }
 
     @Override
-    public UserResponseDTO issueBook(IssueBookRequestDTO dto) {
+    public UserResponse issueBook(IssueBookRequest dto) {
 
         if(CollectionUtils.isEmpty(dto.getBookIds()))
             throw new BadRequestException("validation.constraints.issueBook.Empty.message");
@@ -115,6 +115,7 @@ public class BookServiceImpl extends BaseService implements BookService {
         if(dto.getBookIds().size() > props.getMaxIssueBook())
             throw new BadRequestException("validation.constraints.issueBook.Invalid.Max.message");
 
+        /** TODO: Need to clean, Validation method separation with a ValidationResponseDTO*/
         UserEntity userEntity = userEntityService
                 .findById(dto.getUserId())
                 .orElseThrow(super.supplyRecordNotFoundException("validation.constraints.userId.NotFound.message"));
@@ -131,7 +132,7 @@ public class BookServiceImpl extends BaseService implements BookService {
         bookEntityService.save(bookEntities);
         metaEntityService.save(metaEntities);
 
-        emailService.sendEmail(EmailResponseDTO
+        emailService.sendEmail(EmailResponse
                 .builder()
                 .email(userEntity.getEmail())
                 .body(String.format("Book issued by: %s", userEntity.getFullName()))
@@ -144,7 +145,7 @@ public class BookServiceImpl extends BaseService implements BookService {
     }
 
     @Override
-    public UserResponseDTO submitBooks(SubmitBookRequestDTO dto) {
+    public UserResponse submitBooks(SubmitBookRequest dto) {
         if(CollectionUtils.isEmpty(dto.getBookIds()))
             throw new BadRequestException(messageHelper.getLocalMessage("api.response.BAD_REQUEST.message"));
 
@@ -157,7 +158,7 @@ public class BookServiceImpl extends BaseService implements BookService {
 
         submitBooks(userEntity, dto.getBookIds());
 
-        emailService.sendEmail(EmailResponseDTO
+        emailService.sendEmail(EmailResponse
                 .builder()
                 .email(userEntity.getEmail())
                 .body(String.format("Book submitted by: %s", userEntity.getFullName()))
@@ -183,7 +184,7 @@ public class BookServiceImpl extends BaseService implements BookService {
     }
 
     @Override
-    public UserResponseDTO submitAllBooks(long userId) {
+    public UserResponse submitAllBooks(long userId) {
         UserEntity userEntity = userEntityService
                 .findById(userId)
                 .orElseThrow(supplyRecordNotFoundException("validation.constraints.userId.NotFound.message"));
@@ -204,7 +205,7 @@ public class BookServiceImpl extends BaseService implements BookService {
 
 
     @Override
-    public BookResponseDTO deleteBook(long id) {
+    public BookResponse deleteBook(long id) {
         try{
             BookEntity bookEntity = bookEntityService.delete(id);
             BookMetaEntity metaEntity = metaEntityService.delete(bookEntity.getMetaId());

@@ -1,9 +1,7 @@
 package com.mlab.assessment.model.request.book;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -15,8 +13,9 @@ import javax.validation.constraints.Pattern;
  */
 @Getter
 @Setter
-@Builder
-public class UpdateBookDTO {
+@AllArgsConstructor
+@NoArgsConstructor
+public class UpdateBookRequest {
     @Min(value = 1, message = "validation.constraints.bookId.NotNull.message")
     private long id;
 

@@ -1,7 +1,7 @@
 package com.mlab.assessment;
 
 import com.mlab.assessment.entity.UserEntity;
-import com.mlab.assessment.model.request.book.CreateBookDTO;
+import com.mlab.assessment.model.request.book.CreateBookRequest;
 import com.mlab.assessment.repository.BookMetaRepository;
 import com.mlab.assessment.service.BookEntityService;
 import com.mlab.assessment.service.UserEntityService;
@@ -48,7 +48,7 @@ public class ApplicationSeeder implements ApplicationListener<ContextRefreshedEv
             bookMetaRepository.deleteAll();
 
             bookService.createBook(
-                    new CreateBookDTO(
+                    new CreateBookRequest(
                             "Advanced Java",
                             "Rayan Goslin",
                             "Advanced Java Programming Book",
@@ -56,7 +56,7 @@ public class ApplicationSeeder implements ApplicationListener<ContextRefreshedEv
             );
 
             bookService.createBook(
-                    new CreateBookDTO(
+                    new CreateBookRequest(
                             "C++", "Harvard Shield",
                             "Basic C++ Programming Book",
                             10, "05-02-2001")

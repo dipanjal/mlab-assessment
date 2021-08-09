@@ -1,9 +1,9 @@
 package com.mlab.assessment.controller;
 
 import com.mlab.assessment.model.ApiResponse;
-import com.mlab.assessment.model.dto.CreateUserDTO;
-import com.mlab.assessment.model.dto.UpdateUserDTO;
-import com.mlab.assessment.model.response.user.UserResponseDTO;
+import com.mlab.assessment.model.request.user.CreateUserRequest;
+import com.mlab.assessment.model.request.user.UpdateUserRequest;
+import com.mlab.assessment.model.response.user.UserResponse;
 import com.mlab.assessment.service.user.UserService;
 import com.mlab.assessment.utils.ResponseBuilder;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class UserController extends BaseController {
     private final UserService userService;
 
     @GetMapping("/user/get-all")
-    public ResponseEntity<ApiResponse<List<UserResponseDTO>>> getAllUsers() {
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {
         return ResponseEntity.ok(
                 ResponseBuilder
                         .buildOkResponse(userService.findAllUser())
@@ -33,7 +33,7 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/user/get-by-id/{id}")
-    public ResponseEntity<ApiResponse<UserResponseDTO>> getUserById(@PathVariable long id) {
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable long id) {
         return ResponseEntity.ok(
                 ResponseBuilder
                         .buildOkResponse(userService.findUserById(id))
@@ -41,7 +41,7 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("/user/create")
-    public ResponseEntity<ApiResponse<UserResponseDTO>> createNewUser(@RequestBody @Valid CreateUserDTO dto, BindingResult result) {
+    public ResponseEntity<ApiResponse<UserResponse>> createNewUser(@RequestBody @Valid CreateUserRequest dto, BindingResult result) {
         super.throwIfHasError(result);
 
         return ResponseEntity.ok(
@@ -51,7 +51,7 @@ public class UserController extends BaseController {
     }
 
     @PostMapping("/user/update")
-    public ResponseEntity<ApiResponse<UserResponseDTO>> updateUser(@RequestBody @Valid UpdateUserDTO dto, BindingResult result) {
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(@RequestBody @Valid UpdateUserRequest dto, BindingResult result) {
         super.throwIfHasError(result);
 
         return ResponseEntity.ok(
@@ -61,7 +61,7 @@ public class UserController extends BaseController {
     }
 
     @DeleteMapping("/user/delete-by-id/{id}")
-    public ResponseEntity<ApiResponse<UserResponseDTO>> deleteUserById(@PathVariable long id){
+    public ResponseEntity<ApiResponse<UserResponse>> deleteUserById(@PathVariable long id){
         return ResponseEntity.ok(
                 ResponseBuilder
                         .buildOkResponse(

@@ -1,7 +1,7 @@
 package com.mlab.assessment.specs;
 
 import com.mlab.assessment.entity.BookMetaEntity;
-import com.mlab.assessment.model.dto.BookSearchDTO;
+import com.mlab.assessment.model.request.user.BookSearchRequest;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,11 +22,11 @@ public class BookMetaSpecification {
     private final String FIELD_AUTHOR_NAME = "authorName";
 
 
-    public static Specification<BookMetaEntity> getSearchSpecification(BookSearchDTO request){
+    public static Specification<BookMetaEntity> getSearchSpecification(BookSearchRequest request){
         return Specification.where(generateSearchSpecification(request));
     }
 
-    private static Specification<BookMetaEntity> generateSearchSpecification(BookSearchDTO request){
+    private static Specification<BookMetaEntity> generateSearchSpecification(BookSearchRequest request){
         return ( (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 

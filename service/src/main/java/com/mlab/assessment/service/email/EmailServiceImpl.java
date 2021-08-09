@@ -1,7 +1,7 @@
 package com.mlab.assessment.service.email;
 
 import com.mlab.assessment.annotation.EnableLogging;
-import com.mlab.assessment.model.dto.EmailResponseDTO;
+import com.mlab.assessment.model.response.EmailResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 public class EmailServiceImpl implements EmailService{
 
     @Override
-    public CompletableFuture<Boolean> sendEmail(EmailResponseDTO dto) {
+    public CompletableFuture<Boolean> sendEmail(EmailResponse dto) {
         return CompletableFuture.supplyAsync(() -> {
             log.info(dto.getBody());
             log.info("Email Sent Successfully to: {}", dto.getEmail());
