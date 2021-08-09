@@ -10,6 +10,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,8 +44,7 @@ public class LoggingAspect {
     @Around(value = "serviceLoggingPointcut() && enableLoggingPointcut()")
     public Object performanceLoggingAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
         traceLog(joinPoint);
-        proceedAndLogPerformance(joinPoint);
-        return joinPoint.proceed();
+        return this.proceedAndLogPerformance(joinPoint);
     }
 
     private void traceLog(JoinPoint joinPoint){
@@ -77,9 +77,9 @@ public class LoggingAspect {
         };
     }
 
-    private void proceedAndLogPerformance(ProceedingJoinPoint joinPoint) throws Throwable {
+    private Object proceedAndLogPerformance(ProceedingJoinPoint joinPoint) throws Throwable {
         long entryTime = System.currentTimeMillis();
-        joinPoint.proceed();
+        Object result = joinPoint.proceed();
         long executionTime = System.currentTimeMillis() - entryTime;
 
         String performance = String
@@ -88,6 +88,7 @@ public class LoggingAspect {
                         joinPoint.getSignature().getName(),
                         executionTime);
         log.info(performance);
+        return result;
     }
 
 }
