@@ -154,7 +154,7 @@ public class BookMapper {
 
     public void fillBookSubmissionEntity(UserEntity userEntity, Set<Long> requestedBookIds, List<BookEntity> issuedBooks, List<BookMetaEntity> metaEntities) {
 
-        Predicate<BookEntity> isBookInRequestedBookList = book -> requestedBookIds.contains(book.getId());
+        Predicate<BookEntity> isBookInRequestedBookList = book -> requestedBookIds.contains(book.getId()); //O(n)
 
         userEntity.getBooks().removeIf(isBookInRequestedBookList);
         issuedBooks.forEach(book -> book.getUsers().remove(userEntity));
@@ -162,8 +162,12 @@ public class BookMapper {
     }
 
     public void fillBookSubmissionEntity(UserEntity userEntity, List<BookEntity> issuedBooks, List<BookMetaEntity> metaEntities) {
+        Map<Long, List<BookEntity>> bookMetaMap = issuedBooks
+                .stream()
+                .collect(Collectors.groupingBy(BookEntity::getMetaId));
+
         userEntity.getBooks().removeAll(issuedBooks);
         issuedBooks.forEach(book -> book.getUsers().remove(userEntity));
-        metaEntities.forEach(meta -> meta.setNoOfCopy(meta.getNoOfCopy() + issuedBooks.size()));
+        metaEntities.forEach(meta -> meta.setNoOfCopy(meta.getNoOfCopy() + bookMetaMap.get(meta.getId()).size())); //O(n)
     }
 }

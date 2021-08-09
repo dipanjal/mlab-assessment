@@ -22,13 +22,15 @@ import java.util.Set;
  */
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Disabled
+
 public class UserServiceTest {
 
     @Autowired
     private UserService userService;
     @Autowired
     private BookService bookService;
+
+    private static final String TEST_USERNAME = "larry_c";
 
     @Test
     @Order(1)
@@ -51,31 +53,20 @@ public class UserServiceTest {
 
     @Test
     @Order(3)
-    @Disabled
     public void createUserTest(){
         CreateUserDTO dto = new CreateUserDTO();
-        dto.setUserName("robert_c");
+        dto.setUserName(TEST_USERNAME);
         dto.setFullName("Robert C. Martin");
         dto.setEmail("robert.c.mertin@mlab.com");
-
-        /** NB: Avoiding H2 DB issue
-         * DB call is occurring multiple times only for H2 DB
-         * Handling exception for sake of test case
-         */
-        try{
-            Assertions.assertNotNull(
-                    userService.createUser(dto)
-            );
-        }catch (NotUniqueException e){
-            Assertions.assertTrue(true);
-        }
+        Assertions.assertNotNull(
+                userService.createUser(dto)
+        );
     }
 
     @Test
     @Order(4)
     public void updateUserTest(){
-        String username = "robert_c";
-        UserResponseDTO userResponse = userService.findUserByUsername(username);
+        UserResponseDTO userResponse = userService.findUserByUsername(TEST_USERNAME);
         Assertions.assertNotNull(userResponse);
 
         UpdateUserDTO dto = new UpdateUserDTO();
@@ -90,7 +81,7 @@ public class UserServiceTest {
     @Test
     @Order(5)
     public void issueBookTest(){
-        UserResponseDTO userResponse = userService.findUserByUsername("robert_c");
+        UserResponseDTO userResponse = userService.findUserByUsername(TEST_USERNAME);
         IssueBookRequestDTO dto = new IssueBookRequestDTO();
         dto.setUserId(userResponse.getId());
         dto.setBookIds(Set.of(1L, 2L));
@@ -103,7 +94,7 @@ public class UserServiceTest {
     @Order(6)
     @Disabled
     public void submitBookTest() {
-        UserResponseDTO userResponse = userService.findUserByUsername("robert_c");
+        UserResponseDTO userResponse = userService.findUserByUsername(TEST_USERNAME);
         SubmitBookRequestDTO dto = new SubmitBookRequestDTO();
         dto.setUserId(userResponse.getId());
         dto.setBookIds(Set.of(1L, 2L));
@@ -113,7 +104,7 @@ public class UserServiceTest {
     @Test
     @Order(7)
     public void deleteUserTest(){
-        UserResponseDTO userResponse = userService.findUserByUsername("robert_c");
+        UserResponseDTO userResponse = userService.findUserByUsername(TEST_USERNAME);
         try{
             Assertions.assertNotNull(
                     userService.deleteUser(userResponse.getId())

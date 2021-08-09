@@ -152,6 +152,9 @@ public class BookServiceImpl extends BaseService implements BookService {
                 .findById(dto.getUserId())
                 .orElseThrow(supplyRecordNotFoundException("validation.constraints.userId.NotFound.message"));
 
+        if(CollectionUtils.isEmpty(userEntity.getBooks()))
+            throw new RecordNotFoundException(messageHelper.getLocalMessage("validation.constraints.user.NotIssued.books.message"));
+
         submitBooks(userEntity, dto.getBookIds());
 
         emailService.sendEmail(EmailResponseDTO
@@ -168,7 +171,7 @@ public class BookServiceImpl extends BaseService implements BookService {
         List<BookEntity> issuedBooks = mapper.extractIssuedBooks(userEntity, bookIds);
 
         if(CollectionUtils.isEmpty(issuedBooks))
-            throw new RecordNotFoundException(messageHelper.getLocalMessage("validation.constraints.issueBook.Empty.message"));
+            throw new RecordNotFoundException(messageHelper.getLocalMessage("validation.constraints.issueBook.NotFound.message"));
 
         List<BookMetaEntity> metaEntities = metaEntityService.findMetaInBooks(issuedBooks);
         if(CollectionUtils.isEmpty(metaEntities))

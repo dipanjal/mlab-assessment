@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @since 0.0.1
  */
 @SpringBootTest
-@Disabled
 public class BookServiceTest {
 
     @Autowired
