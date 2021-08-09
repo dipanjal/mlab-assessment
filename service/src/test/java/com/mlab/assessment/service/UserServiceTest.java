@@ -1,6 +1,5 @@
 package com.mlab.assessment.service;
 
-import com.mlab.assessment.exception.NotUniqueException;
 import com.mlab.assessment.exception.RecordNotFoundException;
 import com.mlab.assessment.model.dto.CreateUserDTO;
 import com.mlab.assessment.model.dto.SubmitBookRequestDTO;
@@ -22,7 +21,6 @@ import java.util.Set;
  */
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
 public class UserServiceTest {
 
     @Autowired
