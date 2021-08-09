@@ -104,8 +104,7 @@ public class BookMapper {
                 .description(metaEntity.getDescription())
                 .authorName(metaEntity.getAuthorName())
                 .noOfCopy(metaEntity.getNoOfCopy())
-                .releaseDate(toAPIDateFormat(
-                                metaEntity.getReleaseDate()))
+                .releaseDate(toAPIDateFormat(metaEntity.getReleaseDate()))
                 .issuedUsers(mapToIssuedUserDTO(bookEntity.getUsers()))
                 .build();
     }

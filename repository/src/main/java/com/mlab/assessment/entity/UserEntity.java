@@ -40,6 +40,9 @@ public class UserEntity extends BaseEntity {
     public void addBook(BookEntity bookEntity){
         books.add(bookEntity);
     }
+    public void removeBook(BookEntity bookEntity){
+        books.remove(bookEntity);
+    }
 
     public UserEntity(String username, String fullName, String email) {
         this.username = username;

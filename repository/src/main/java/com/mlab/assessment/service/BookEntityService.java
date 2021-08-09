@@ -37,7 +37,7 @@ public class BookEntityService extends BaseCRUDService<BookEntity, BookRepositor
     public BookEntity delete(long id){
         return repository.findById(id)
                 .map(bookEntity -> {
-                    bookEntity.getUsers().forEach( user -> user.setBooks(null));
+                    bookEntity.getUsers().forEach( user -> user.removeBook(bookEntity));
                     bookEntity.getUsers().clear();
                     repository.delete(bookEntity);
                     return bookEntity;
