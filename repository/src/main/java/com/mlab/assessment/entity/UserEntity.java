@@ -29,7 +29,8 @@ public class UserEntity extends BaseEntity {
     @Column(name = "email")
     private String email;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.LAZY)
     @JoinTable(name = "mlab_user_book",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "book_id")}
@@ -40,7 +41,7 @@ public class UserEntity extends BaseEntity {
         books.add(bookEntity);
     }
     public void removeBook(BookEntity bookEntity){
-        books.add(bookEntity);
+        books.remove(bookEntity);
     }
 
     public UserEntity(String username, String fullName, String email) {

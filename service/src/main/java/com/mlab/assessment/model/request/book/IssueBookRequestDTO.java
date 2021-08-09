@@ -3,6 +3,7 @@ package com.mlab.assessment.model.request.book;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Singular;
 
 import javax.validation.constraints.Min;
 import java.util.Set;
@@ -18,5 +19,6 @@ public class IssueBookRequestDTO {
     @JsonProperty("user_id")
     private long userId;
     @JsonProperty("book_ids")
+    @Singular
     private Set<Long> bookIds;
 }

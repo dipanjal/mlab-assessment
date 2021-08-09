@@ -1,7 +1,9 @@
 package com.mlab.assessment.model.request.book;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Min;
@@ -14,6 +16,8 @@ import javax.validation.constraints.Pattern;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateBookDTO {
     @NotBlank(message = "Book name can not be empty")
     private String name;

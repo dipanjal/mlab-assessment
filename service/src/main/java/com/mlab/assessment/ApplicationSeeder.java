@@ -25,17 +25,18 @@ import java.util.List;
 public class ApplicationSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
     private final UserEntityService userEntityService;
+
     private final BookEntityService bookEntityService;
     private final BookMetaRepository bookMetaRepository;
 
     private final BookService bookService;
 
     private void populateUsers(){
-
         if(CollectionUtils.isEmpty(userEntityService.findAll())){
             List<UserEntity> userEntities = List.of(
                     new UserEntity("jhon_d","Jhon Doe", "jhon@example.com"),
-                    new UserEntity("mariya_tk","Mariya Takeuchi","mariya@example.com")
+                    new UserEntity("mariya_tk","Mariya Takeuchi","mariya@example.com"),
+                    new UserEntity("robert_c","Robert C Martin","robert.c@mlab.com")
             );
             userEntityService.save(userEntities);
         }
@@ -47,23 +48,18 @@ public class ApplicationSeeder implements ApplicationListener<ContextRefreshedEv
             bookMetaRepository.deleteAll();
 
             bookService.createBook(
-                    CreateBookDTO.builder()
-                            .name("Advanced Java")
-                            .authorName("Rayan Goslin")
-                            .description("Advanced Java Programming Book")
-                            .noOfCopy(10)
-                            .releaseDate("18-03-2012")
-                            .build()
+                    new CreateBookDTO(
+                            "Advanced Java",
+                            "Rayan Goslin",
+                            "Advanced Java Programming Book",
+                            10, "18-03-2012")
             );
 
             bookService.createBook(
-                    CreateBookDTO.builder()
-                            .name("C++")
-                            .authorName("Harvard Shield")
-                            .description("Basic C++ Programming Book")
-                            .noOfCopy(10)
-                            .releaseDate("05-02-2001")
-                            .build()
+                    new CreateBookDTO(
+                            "C++", "Harvard Shield",
+                            "Basic C++ Programming Book",
+                            10, "05-02-2001")
             );
         }
     }

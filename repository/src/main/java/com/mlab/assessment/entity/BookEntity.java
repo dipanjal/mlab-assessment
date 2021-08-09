@@ -23,7 +23,8 @@ public class BookEntity extends BaseEntity {
     @Column(name = "meta_id", nullable = false)
     private long metaId;
 
-    @ManyToMany(mappedBy = "books", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "books", cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.LAZY)
     private List<UserEntity> users = new ArrayList<>();
 
     public void addUser(UserEntity userEntity){

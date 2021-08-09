@@ -1,5 +1,6 @@
 package com.mlab.assessment.service;
 
+import com.mlab.assessment.annotation.EnableLogging;
 import com.mlab.assessment.entity.BookEntity;
 import com.mlab.assessment.entity.BookMetaEntity;
 import com.mlab.assessment.exception.RecordNotFoundException;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
  * @since 0.0.1
  */
 @Service
+@EnableLogging
 public class BookEntityService extends BaseCRUDService<BookEntity, BookRepository> {
     public BookEntityService(BookRepository repository) {
         super(repository);
@@ -35,7 +37,7 @@ public class BookEntityService extends BaseCRUDService<BookEntity, BookRepositor
     public BookEntity delete(long id){
         return repository.findById(id)
                 .map(bookEntity -> {
-                    bookEntity.getUsers().forEach( user -> user.setBooks(null));
+                    bookEntity.getUsers().forEach( user -> user.removeBook(bookEntity));
                     bookEntity.getUsers().clear();
                     repository.delete(bookEntity);
                     return bookEntity;

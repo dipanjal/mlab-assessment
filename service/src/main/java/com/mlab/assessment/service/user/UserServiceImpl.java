@@ -3,6 +3,7 @@ package com.mlab.assessment.service.user;
 import com.mlab.assessment.annotation.EnableLogging;
 import com.mlab.assessment.entity.BookMetaEntity;
 import com.mlab.assessment.entity.UserEntity;
+import com.mlab.assessment.exception.NotUniqueException;
 import com.mlab.assessment.exception.RecordNotFoundException;
 import com.mlab.assessment.model.dto.CreateUserDTO;
 import com.mlab.assessment.model.dto.UpdateUserDTO;
@@ -10,6 +11,7 @@ import com.mlab.assessment.model.response.user.UserResponseDTO;
 import com.mlab.assessment.service.BaseService;
 import com.mlab.assessment.service.BookMetaEntityService;
 import com.mlab.assessment.service.UserEntityService;
+import com.mlab.assessment.service.book.BookService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     private final UserEntityService userEntityService;
     private final BookMetaEntityService metaEntityService;
+    private final BookService bookService;
     private final UserMapper mapper;
 
     @Override
@@ -49,7 +52,23 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
+    public UserResponseDTO findUserByUsername(String userName) {
+        UserEntity userEntity = userEntityService
+                .findUserByUsername(userName)
+                .orElseThrow(supplyRecordNotFoundException("validation.constraints.username.NotFound.message"));
+
+        List<BookMetaEntity> metaEntityList = metaEntityService.findMetaInBooks(userEntity.getBooks());
+        return mapper.mapToDto(userEntity, metaEntityList);
+    }
+
+    @Override
     public UserResponseDTO createUser(CreateUserDTO dto) {
+        userEntityService.findUserByUsername(dto.getUserName())
+                .ifPresent(u -> {
+                    throw new NotUniqueException(
+                            messageHelper.getLocalMessage(
+                                    "validation.constraints.username.exists.message"));
+                });
         UserEntity entity = mapper.mapToNewUserEntity(dto);
         userEntityService.save(entity);
         return getUserResponseDTO(entity);
@@ -68,6 +87,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     public UserResponseDTO deleteUser(long id) {
+        bookService.submitAllBooks(id);
         try{
             return mapper.mapToDto(userEntityService.delete(id));
         }catch (RecordNotFoundException e) {
