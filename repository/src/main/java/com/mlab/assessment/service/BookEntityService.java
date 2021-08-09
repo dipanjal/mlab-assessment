@@ -1,15 +1,12 @@
 package com.mlab.assessment.service;
 
-import com.mlab.assessment.annotation.EnableLogging;
 import com.mlab.assessment.entity.BookEntity;
 import com.mlab.assessment.entity.BookMetaEntity;
 import com.mlab.assessment.exception.RecordNotFoundException;
 import com.mlab.assessment.repository.BookRepository;
-import com.mlab.assessment.specs.BookSpecification;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

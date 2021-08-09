@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -19,10 +18,7 @@ import java.util.Locale;
  * @since 0.0.1
  */
 @Configuration
-@RequiredArgsConstructor
 public class MessageConfig implements WebMvcConfigurer {
-
-    private final Environment env;
 
     @Bean
     public LocaleResolver localeResolver() {
