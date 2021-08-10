@@ -4,6 +4,14 @@ A Simple Rest API Project for Assessment Test
 ## [Swagger API Doc][swagger-url]
 API Endpoints are Documented Here
 
+### USER CONTROLLERS
+![image info](./user-controllers.PNG)
+
+### BOOK CONTROLLERS
+![image info](./book-controllers.PNG)
+
+You can use the Swagger API Doc for Testing Rest APIs
+
 ## Contact
 
 [![Gmail][gmail-shield]][email-address]
